@@ -1,0 +1,109 @@
+
+<div class="movie-info-container">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <div class="movie-content" *ngIf="movie">
+      <div class="movie-header" [style.backgroundImage]="'url(' + movie.posterUrl + ')'">
+        <div class="overlay">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-3">
+                <img [src]="movie.posterUrl" [alt]="movie.title" class="movie-poster">
+              </div>
+              <div class="col-md-9">
+                <div class="movie-details">
+                  <h1>{{movie.title}}</h1>
+                  <div class="meta-info">
+                    <span class="duration">
+                      <mat-icon>access_time</mat-icon>
+                      {{movie.duration}} phút
+                    </span>
+                    <span class="genre">
+                      <mat-icon>movie</mat-icon>
+                      {{movie.genre}}
+                    </span>
+                    <span class="rating" *ngIf="movie.rating">
+                      <mat-icon>star</mat-icon>
+                      {{movie.rating}}/5
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="container mt-4">
+        <div class="row">
+          <div class="col-md-8">
+            <mat-card>
+              <mat-card-content>
+                <h2>Nội dung phim</h2>
+                <p>{{movie.description}}</p>
+  
+                <mat-divider class="my-4"></mat-divider>
+  
+                <h2>Thông tin chi tiết</h2>
+                <div class="movie-info-grid">
+                  <div class="info-item">
+                    <strong>Đạo diễn:</strong>
+                    <span>{{movie.director}}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Diễn viên:</strong>
+                    <span>{{movie.cast}}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Khởi chiếu:</strong>
+                    <span>{{movie.releaseDate | date}}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Ngôn ngữ:</strong>
+                    <span>{{movie.language}}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Phụ đề:</strong>
+                    <span>{{movie.subtitle}}</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+  
+          <div class="col-md-4">
+            <mat-card class="booking-card">
+              <mat-card-header>
+                <mat-card-title>Đặt vé</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Chọn ngày</mat-label>
+                  <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+  
+                <div class="showtimes-grid">
+                  <button mat-stroked-button 
+                          *ngFor="let time of showtimes"
+                          [class.selected]="selectedTime === time"
+                          (click)="selectShowtime(time)">
+                    {{time}}
+                  </button>
+                </div>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" class="w-100" 
+                        [disabled]="!selectedTime"
+                        (click)="bookTicket()">
+                  <mat-icon>local_activity</mat-icon>
+                  Đặt vé ngay
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

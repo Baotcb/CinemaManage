@@ -1,11 +1,12 @@
 // register.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MaterialModule } from '../material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 interface IUser {
   userId?: number;
@@ -32,6 +33,9 @@ export class RegisterComponent implements OnInit {
   isLoading = false;
   maxDate: Date;
 
+  private httpClient = inject(HttpClient);
+
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -46,7 +50,7 @@ export class RegisterComponent implements OnInit {
       password: ['', [
         Validators.required, 
         Validators.minLength(6),
-        Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,}')
+        //Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,}')
       ]],
       confirmPassword: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -54,7 +58,7 @@ export class RegisterComponent implements OnInit {
       phoneNumber: ['', [Validators.pattern('^(0|\\+84)[0-9]{9,10}$')]],
       dateOfBirth: [null],
       address: [''],
-      termsAccepted: [false, [Validators.requiredTrue]] // Add this line
+      termsAccepted: [false, [Validators.requiredTrue]] 
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -82,42 +86,34 @@ export class RegisterComponent implements OnInit {
       };
 
       console.log('User Data:', userData);
+
+       const apiUri = 'https://localhost:7057/api/User/SignUp';
+            const httpOptions = {
+              headers: new HttpHeaders({
+                'Authorization': 'my-auth-token',
+                'Content-Type': 'application/json'
+              })
+            };
+            this.httpClient.post<IUser>(apiUri, userData, httpOptions)
+            .subscribe({
+              next:(response :IUser) => {
+                this.isLoading = false;
+                this.snackBar.open('Đăng ký thành công', 'Đóng', { duration: 3000 });
+                this.router.navigate(['/login']);
+              },
+              error: (error) => {
+                console.error('Register error:', error);
+                this.snackBar.open('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.', 'Đóng', { duration: 3000 });
+              }
+            });
+
       
-      // Simulate API call with a timeout
-      setTimeout(() => {
-        this.isLoading = false;
-        this.snackBar.open('Đăng ký thành công! Vui lòng đăng nhập.', 'Đóng', {
-          duration: 5000,
-          panelClass: ['success-snackbar']
-        });
-        this.router.navigate(['/login']);
-      }, 2000);
       
-      // Actual API call implementation:
-      // this.userService.register(userData).subscribe({
-      //   next: (response) => {
-      //     this.isLoading = false;
-      //     this.snackBar.open('Đăng ký thành công! Vui lòng đăng nhập.', 'Đóng', {
-      //       duration: 5000,
-      //       panelClass: ['success-snackbar']
-      //     });
-      //     this.router.navigate(['/login']);
-      //   },
-      //   error: (error) => {
-      //     this.isLoading = false;
-      //     this.snackBar.open('Đăng ký thất bại: ' + error.message, 'Đóng', {
-      //       duration: 5000,
-      //       panelClass: ['error-snackbar']
-      //     });
-      //   }
-      // });
+   
     } else {
-      // Mark all fields as touched to trigger validation messages
-      Object.keys(this.registerForm.controls).forEach(key => {
-        const control = this.registerForm.get(key);
-        control?.markAsTouched();
-      });
+  
     }
+    this.isLoading = false;
   }
 
   // Helper methods for form validation messages

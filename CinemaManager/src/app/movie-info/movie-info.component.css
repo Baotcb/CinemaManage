@@ -1,0 +1,111 @@
+.movie-info-container {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .movie-header {
+    position: relative;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%);
+    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .movie-poster {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  
+  .movie-details {
+    color: white;
+    padding: 2rem;
+  }
+  
+  .movie-details h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .meta-info {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .meta-info span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .movie-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .info-item strong {
+    color: #666;
+  }
+  
+  .booking-card {
+    position: sticky;
+    top: 2rem;
+  }
+  
+  .showtimes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .showtimes-grid button {
+    width: 100%;
+  }
+  
+  .showtimes-grid button.selected {
+    background-color: #673ab7;
+    color: white;
+  }
+  
+  @media (max-width: 768px) {
+    .movie-header {
+      height: auto;
+      padding: 2rem 0;
+    }
+  
+    .movie-details h1 {
+      font-size: 2rem;
+    }
+  
+    .meta-info {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .movie-info-grid {
+      grid-template-columns: 1fr;
+    }
+  }

@@ -42,10 +42,14 @@
     <!-- Movies Grid -->
     <section class="movies-grid">
       <div class="container">
-        <div class="row g-4">
-          <div class="col-md-6 col-lg-4" *ngFor="let movie of movies">
+        <div *ngIf="isLoading" class="text-center py-5">
+          <mat-spinner diameter="50" class="mx-auto"></mat-spinner>
+          <p class="mt-3">Đang tải danh sách phim...</p>
+        </div>
+        <div *ngIf="!isLoading" class="row g-4">
+          <div class="col-md-6 col-lg-4" *ngFor="let movie of filteredMovies">
             <mat-card class="movie-card">
-              <img mat-card-image [src]="movie.imageUrl" [alt]="movie.title">
+              <img mat-card-image [src]="movie.posterUrl" [alt]="movie.title">
               <div class="rating-badge">
                 <mat-icon>star</mat-icon>
                 {{movie.rating}}
@@ -66,14 +70,14 @@
                 <div class="show-times">
                   <h3>Suất chiếu:</h3>
                   <div class="time-slots">
-                    <button mat-stroked-button *ngFor="let time of movie.showTimes">
+                    <button mat-stroked-button *ngFor="let time of movie.showtimes">
                       {{time}}
                     </button>
                   </div>
                 </div>
               </mat-card-content>
               <mat-card-actions>
-                <button mat-raised-button color="primary" class="book-btn">
+                <button mat-raised-button color="primary" class="book-btn" [routerLink]="['/movieInfo', movie.movieId]" routerLinkActive="active-link">
                   <mat-icon>local_activity</mat-icon>
                   Đặt vé
                 </button>
@@ -84,6 +88,10 @@
               </mat-card-actions>
             </mat-card>
           </div>
+        </div>
+        <div *ngIf="!isLoading && filteredMovies.length == 0" class="text-center py-5">
+          <mat-icon>movie_off</mat-icon>
+          <p>Không tìm thấy phim nào</p>
         </div>
       </div>
     </section>

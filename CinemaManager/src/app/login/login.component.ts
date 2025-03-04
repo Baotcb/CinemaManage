@@ -8,6 +8,8 @@ import { catchError, finalize, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 interface IUser {
+  userId: number;
+  username: string;
   email: string;
   password: string;
   phoneNumber: string;
@@ -73,7 +75,7 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const user = {
-        username: this.loginForm.get('email')?.value,
+        email: this.loginForm.get('email')?.value,
         password: this.loginForm.get('password')?.value,
       };
       
@@ -91,17 +93,22 @@ export class LoginComponent implements OnInit {
       this.httpClient.post<IUser>(apiUri, user, httpOptions)
         .pipe(
           tap((response: IUser) => {
-            if (response && response.role !== 1) {
-              // Save to local storage if "Remember Me" is checked
+            console.log('Login response:', response);
+            if (response && response.role != 1) {
+
+              localStorage.setItem('username', response.username);
+              localStorage.setItem('userId', response.userId.toString());
+              //localStorage.setItem('role', response.role.toString());
+             
               if (this.loginForm.get('rememberMe')?.value) {
-                localStorage.setItem('auth_token', 'user_token'); // Replace with actual token
-                localStorage.setItem('user_role', response.role.toString());
+               
+                //localStorage.setItem('user_role', response.role.toString());
               } else {
-                sessionStorage.setItem('auth_token', 'user_token'); // Replace with actual token
-                sessionStorage.setItem('user_role', response.role.toString());
+                // sessionStorage.setItem('auth_token', 'user_token'); 
+                // sessionStorage.setItem('user_role', response.role.toString());
               }
               
-              // Clear sensitive data
+             
               response.password = '';
               response.email = '';
               response.phoneNumber = '';

@@ -4,6 +4,7 @@ import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { ShowingMovieComponent } from './showing-movie/showing-movie.component';
 import { UpcomingMovieComponent } from './upcoming-movie/upcoming-movie.component';
+import { MovieInfoComponent } from './movie-info/movie-info.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -11,6 +12,7 @@ export const routes: Routes = [
     {path:'register', component: RegisterComponent},
     {path:'home',component: HomeComponent},
     {path:'movie',component: ShowingMovieComponent},
-    {path:'coming',component: UpcomingMovieComponent}
+    {path:'coming',component: UpcomingMovieComponent},
+    {path:'movieInfo/:id',component: MovieInfoComponent}
 
 ];
