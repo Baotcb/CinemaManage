@@ -1,0 +1,35 @@
+
+.search-form {
+  width: 200px;
+  margin-top: -16px;
+  margin-bottom: -16px;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.active-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid white;
+}
+
+@media (max-width: 767px) {
+  .search-form {
+    width: 150px;
+  }
+}
+
+.sidenav-container {
+  min-height: calc(100vh - 64px);
+}
+
+mat-sidenav {
+  width: 280px;
+}
+
+@media (max-width: 599px) {
+  .sidenav-container {
+    min-height: calc(100vh - 56px);
+  }
+}

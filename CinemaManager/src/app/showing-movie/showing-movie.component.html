@@ -1,0 +1,90 @@
+<!-- showing-movie.component.html -->
+<div class="showing-movies-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <h1>Phim Đang Chiếu</h1>
+        <p>Đặt vé xem phim yêu thích của bạn ngay hôm nay</p>
+      </div>
+    </section>
+  
+    <!-- Filter Section -->
+    <section class="filter-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Thể loại</mat-label>
+              <mat-select [(ngModel)]="selectedGenre" (selectionChange)="filterMovies(selectedGenre)">
+                <mat-option *ngFor="let genre of genres" [value]="genre.value">
+                  {{genre.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Chọn ngày</mat-label>
+              <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <button mat-raised-button color="primary" class="w-100">
+              <mat-icon>search</mat-icon> Tìm kiếm
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Movies Grid -->
+    <section class="movies-grid">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4" *ngFor="let movie of movies">
+            <mat-card class="movie-card">
+              <img mat-card-image [src]="movie.imageUrl" [alt]="movie.title">
+              <div class="rating-badge">
+                <mat-icon>star</mat-icon>
+                {{movie.rating}}
+              </div>
+              <mat-card-content>
+                <h2 class="movie-title">{{movie.title}}</h2>
+                <div class="movie-info">
+                  <span class="duration">
+                    <mat-icon>access_time</mat-icon>
+                    {{movie.duration}}
+                  </span>
+                  <span class="genre">
+                    <mat-icon>local_movies</mat-icon>
+                    {{movie.genre}}
+                  </span>
+                </div>
+                <p class="description">{{movie.description}}</p>
+                <div class="show-times">
+                  <h3>Suất chiếu:</h3>
+                  <div class="time-slots">
+                    <button mat-stroked-button *ngFor="let time of movie.showTimes">
+                      {{time}}
+                    </button>
+                  </div>
+                </div>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" class="book-btn">
+                  <mat-icon>local_activity</mat-icon>
+                  Đặt vé
+                </button>
+                <button mat-stroked-button color="accent">
+                  <mat-icon>info</mat-icon>
+                  Chi tiết
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

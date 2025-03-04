@@ -1,0 +1,62 @@
+<!-- upcoming-movie.component.html -->
+<div class="upcoming-movies-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <h1>Phim Sắp Chiếu</h1>
+        <p>Khám phá những bộ phim hấp dẫn sắp ra mắt tại rạp</p>
+      </div>
+    </section>
+  
+    <!-- Movies Grid Section -->
+    <section class="movies-section">
+      <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Sắp xếp theo</mat-label>
+            <mat-select [(ngModel)]="selectedSort" (selectionChange)="sortMovies($event.value)">
+              <mat-option value="date">Ngày khởi chiếu</mat-option>
+              <mat-option value="name">Tên phim</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+  
+        <!-- Movies Grid -->
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4" *ngFor="let movie of upcomingMovies">
+            <mat-card class="movie-card h-100">
+              <img mat-card-image [src]="movie.imageUrl" [alt]="movie.title">
+              <mat-card-content>
+                <div class="release-badge">
+                  {{movie.releaseDate | date:'dd/MM/yyyy'}}
+                </div>
+                <h2 class="movie-title">{{movie.title}}</h2>
+                <div class="movie-info">
+                  <span class="duration">
+                    <mat-icon>access_time</mat-icon>
+                    {{movie.duration}}
+                  </span>
+                  <span class="genre">
+                    <mat-icon>movie</mat-icon>
+                    {{movie.genre}}
+                  </span>
+                </div>
+                <p class="description">{{movie.description}}</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" class="notification-btn">
+                  <mat-icon>notifications</mat-icon>
+                  Nhận thông báo
+                </button>
+                <button mat-stroked-button color="accent">
+                  <mat-icon>play_circle</mat-icon>
+                  Xem trailer
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

@@ -1,0 +1,132 @@
+<!-- home.component.html -->
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+      <h1>Trải Nghiệm Điện Ảnh Tuyệt Vời</h1>
+      <p>Đặt vé ngay hôm nay để xem những bộ phim mới nhất</p>
+      <button mat-raised-button color="primary">Đặt Vé Ngay</button>
+    </div>
+  </section>
+  
+  <!-- Now Showing Section -->
+  <section class="movie-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Phim Đang Chiếu</h2>
+        <button mat-button color="primary">Xem tất cả</button>
+      </div>
+  
+      <div class="row">
+        <div class="col-md-3 mb-4" *ngFor="let movie of featuredMovies">
+          <mat-card class="movie-card">
+            <img mat-card-image [src]="movie.imageUrl" [alt]="movie.title">
+            <mat-card-content>
+              <h3>{{movie.title}}</h3>
+              <div class="movie-info">
+                <span class="duration">
+                  <mat-icon>access_time</mat-icon>
+                  {{movie.duration}}
+                </span>
+                <span class="rating">
+                  <mat-icon>star</mat-icon>
+                  {{movie.rating}}
+                </span>
+              </div>
+              <p class="genre">{{movie.genre}}</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" class="book-button">
+                Đặt Vé
+              </button>
+              <button mat-button color="accent">
+                Chi Tiết
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Coming Soon Section -->
+  <section class="movie-section coming-soon">
+    <div class="container">
+      <div class="section-header">
+        <h2>Sắp Chiếu</h2>
+        <button mat-button color="primary">Xem tất cả</button>
+      </div>
+  
+      <div class="row">
+        <div class="col-md-3 mb-4" *ngFor="let movie of upcomingMovies">
+          <mat-card class="movie-card">
+            <img mat-card-image [src]="movie.imageUrl" [alt]="movie.title">
+            <mat-card-content>
+              <h3>{{movie.title}}</h3>
+              <div class="movie-info">
+                <span class="release-date">
+                  <mat-icon>calendar_today</mat-icon>
+                  {{movie.releaseDate | date}}
+                </span>
+              </div>
+              <p class="genre">{{movie.genre}}</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-stroked-button color="primary">
+                Nhắc Tôi
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Promotions Section -->
+  <section class="promo-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Ưu Đãi Đặc Biệt</h2>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let promo of promotions">
+          <mat-card class="promo-card">
+            <mat-card-content>
+              <mat-icon color="primary">{{promo.icon}}</mat-icon>
+              <h3>{{promo.title}}</h3>
+              <p>{{promo.description}}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="footer py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h4>Cinema VN</h4>
+          <p>Trải nghiệm điện ảnh tuyệt vời nhất tại Việt Nam</p>
+        </div>
+        <div class="col-md-4">
+          <h4>Liên Hệ</h4>
+          <p><mat-icon inline>phone</mat-icon> 0123 456 789</p>
+          <p><mat-icon inline>email</mat-icon> info cinemavn.com</p>
+        </div>
+        <div class="col-md-4">
+          <h4>Theo Dõi Chúng Tôi</h4>
+          <div class="social-icons">
+            <a href="#" class="me-2"><mat-icon>facebook</mat-icon></a>
+            <a href="#" class="me-2"><mat-icon>public</mat-icon></a>
+            <a href="#"><mat-icon>photo_camera</mat-icon></a>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12 text-center">
+          <p class="mb-0">© 2025 Cinema VN. Tất cả các quyền được bảo lưu.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
