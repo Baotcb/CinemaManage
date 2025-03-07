@@ -264,12 +264,20 @@ confirmCancelBooking(bookingId: number): void {
 }
 
 cancelBooking(bookingId: number): void {
+  if (!this.userId) {
+    this.snackBar.open('Không thể hủy vé. Vui lòng đăng nhập lại.', 'Đóng', {
+      duration: 5000
+    });
+    return;
+  }
+  
   this.isLoading = true;
   
-  this.http.post(`https://localhost:7057/api/Booking/CancelBooking/${bookingId}`, {})
+  // Updated URL to include both userId and bookingId parameters
+  this.http.post(`https://localhost:7057/api/Booking/Cancel/${this.userId}/${bookingId}`, {})
     .subscribe({
       next: (response: any) => {
-        this.snackBar.open('Đã hủy đặt vé thành công', 'Đóng', {
+        this.snackBar.open(response.message || 'Đã hủy đặt vé thành công', 'Đóng', {
           duration: 3000
         });
         // Reload booking list to reflect the cancellation

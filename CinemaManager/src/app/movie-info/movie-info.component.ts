@@ -130,16 +130,28 @@ export class MovieInfoComponent implements OnInit {
       const dateTimeParts = parts[1].split(' ');
       const date = dateTimeParts[0]; // 10/03/2025
       
-      // Combine time parts
-      let time = dateTimeParts[1]; // 10:00:00
+      // Get time components
+      let timeString = dateTimeParts[1]; // 10:00:00
+      let period = '';
+      
       if (dateTimeParts.length > 2) {
-        time += ' ' + dateTimeParts[2]; // Add AM/PM (SA/CH)
+        period = dateTimeParts[2]; // SA or CH
+        // Store both formats - original and 24-hour
+        const originalTime = `${timeString} ${period}`;
+        const time24 = this.convertTo24HourFormat(originalTime);
+        
+        return {
+          cinema,
+          date,
+          time: time24, // Store as 24-hour format
+          fullShowtime: showtime
+        };
       }
       
       return {
         cinema,
         date,
-        time,
+        time: timeString, // Already 24-hour format
         fullShowtime: showtime
       };
     } catch (error) {
@@ -151,6 +163,12 @@ export class MovieInfoComponent implements OnInit {
         fullShowtime: showtime
       };
     }
+  }
+  formatTimeForDisplay(time24: string): string {
+    if (!time24) return '';
+    
+    const [hours, minutes] = time24.split(':').map(Number);
+    return `${hours}h${minutes.toString().padStart(2, '0')}`;
   }
 
   parseAllShowtimes() {
@@ -222,37 +240,34 @@ export class MovieInfoComponent implements OnInit {
 
   bookTicket() {
     if (!this.selectedCinema || !this.selectedDate || !this.selectedTime || !this.movie) return;
-    
-    this.isLoadingSeats = true;
-    this.showSeatSelection = true;
-    this.selectedSeats = [];
-    
-    // Parse date from DD/MM/YYYY format to YYYY-MM-DD for API
-    const [day, month, year] = this.selectedDate.split('/').map(Number);
-    const dateFormatted = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    
-    // Parse start time - extract only HH:MM:SS part and handle AM/PM notation
-    const timeComponents = this.selectedTime.split(' ');
-    const startTimeFormatted = timeComponents[0]; // HH:MM:SS
-    
-    // Calculate end time based on movie duration
-    const [hours, minutes, seconds] = startTimeFormatted.split(':').map(Number);
-    
-    // Create a Date object for time calculation
-    const startDate = new Date();
-    startDate.setHours(hours, minutes, seconds || 0);
-    
-    // Add movie duration in minutes
-    const endDate = new Date(startDate.getTime() + (this.movie.duration * 60 * 1000));
-    
-    // Format the end time as HH:MM:SS
-    const endTimeFormatted = `${endDate.getHours().toString().padStart(2, '0')}:${
-      endDate.getMinutes().toString().padStart(2, '0')}:${
-      endDate.getSeconds().toString().padStart(2, '0')}`;
-    
-    console.log(`Movie start time: ${startTimeFormatted}`);
-    console.log(`Movie duration: ${this.movie.duration} minutes`);
-    console.log(`Movie end time: ${endTimeFormatted}`);
+  
+  this.isLoadingSeats = true;
+  this.showSeatSelection = true;
+  this.selectedSeats = [];
+  
+  const [day, month, year] = this.selectedDate.split('/').map(Number);
+  const dateFormatted = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  
+  // Time is already in 24-hour format, so no need to split by space
+  const startTimeFormatted = this.selectedTime;
+  
+  // Calculate end time based on movie duration
+  const [hours, minutes, seconds] = startTimeFormatted.split(':').map(Number);
+  
+  // Create a Date object for time calculation
+  const startDate = new Date();
+  startDate.setHours(hours, minutes, seconds || 0);
+  
+  // Add movie duration in minutes
+  const endDate = new Date(startDate.getTime() + (this.movie.duration * 60 * 1000));
+  
+  const endTimeFormatted = `${endDate.getHours().toString().padStart(2, '0')}:${
+    endDate.getMinutes().toString().padStart(2, '0')}:${
+    endDate.getSeconds().toString().padStart(2, '0')}`;
+  
+  console.log(`Movie start time: ${startTimeFormatted}`);
+  console.log(`Movie duration: ${this.movie.duration} minutes`);
+  console.log(`Movie end time: ${endTimeFormatted}`);
     
     // Make API call with both start and end times
     const apiUrl = `https://localhost:7057/api/Seat/GetAvailableSeats/${this.movieId}/${
@@ -282,6 +297,33 @@ export class MovieInfoComponent implements OnInit {
         });
       }
     });
+  }
+  convertTo24HourFormat(timeStr: string): string {
+    // Check if the time already has AM/PM indicator
+    if (timeStr.includes(' ')) {
+      const [time, period] = timeStr.split(' ');
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      
+      // Convert to 24-hour format
+      let hour24 = hours;
+      
+      // Handle PM (CH) cases - add 12 to hours unless it's 12 PM
+      if (period === 'CH' && hours < 12) {
+        hour24 = hours + 12;
+      }
+      
+      // Handle AM (SA) cases - convert 12 AM to 0
+      if (period === 'SA' && hours === 12) {
+        hour24 = 0;
+      }
+      
+      // Format the time
+      return `${hour24.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${
+        seconds ? seconds.toString().padStart(2, '0') : '00'}`;
+    }
+    
+    // Time is already in 24-hour format
+    return timeStr;
   }
   closeSeatSelection() {
     this.showSeatSelection = false;
@@ -403,13 +445,10 @@ export class MovieInfoComponent implements OnInit {
               bookingId: response.bookingId,
               ...bookingDetails
             }));
-            
-         
-     
-            
             this.snackBar.open('Đặt vé thành công!', 'Đóng', {
               duration: 5000
             });
+              this.router.navigate(['/booking']);
           } else {
             this.snackBar.open(response.errorMessage || 'Đặt vé thất bại', 'Đóng', {
               duration: 5000

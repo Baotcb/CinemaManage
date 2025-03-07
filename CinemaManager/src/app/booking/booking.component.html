@@ -156,10 +156,14 @@
                     Hủy đặt vé
                 </button> -->
            
-              <button mat-raised-button color="primary"  (click)="confirmCancelBooking(booking.bookingId)">
-                <mat-icon>cancel</mat-icon>
+                <button *ngIf="canCancelBooking(booking)" 
+                mat-raised-button 
+                color="warn" 
+                (click)="confirmCancelBooking(booking.bookingId)">
+              <mat-icon>cancel</mat-icon>
                 Hủy đặt vé
               </button>
+
             </mat-card-actions>
           </mat-card>
         </div>
