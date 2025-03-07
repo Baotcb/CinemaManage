@@ -1,0 +1,268 @@
+<div class="profile-container container-fluid">
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" color="primary"></mat-progress-bar>
+
+  <div class="row justify-content-center py-5" *ngIf="!isLoading && user">
+    <div class="col-lg-8 col-md-10">
+      <mat-card class="profile-card shadow-sm">
+        <mat-card-header>
+          <div class="profile-header">
+            <div class="profile-avatar-container">
+              <div class="profile-avatar">
+                <input 
+                  type="file" 
+                  #profilePictureInput 
+                  (change)="onProfilePictureChange($event)"
+                  accept="image/*" 
+                  class="d-none"
+                >
+                <div 
+                  *ngIf="isEditing" 
+                  class="avatar-edit-overlay" 
+                  (click)="profilePictureInput.click()"
+                >
+                  <mat-icon>camera_alt</mat-icon>
+                </div>
+                <img 
+                  *ngIf="previewProfilePicture" 
+                  [src]="previewProfilePicture" 
+                  class="avatar-image"
+                >
+                <div 
+                  *ngIf="!previewProfilePicture" 
+                  class="avatar-placeholder"
+                >
+                  <mat-icon>person</mat-icon>
+                </div>
+              </div>
+              <h2 class="username mt-3">{{ user.username }}</h2>
+            </div>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Họ và tên</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="fullName" 
+                    [readonly]="!isEditing"
+                  >
+                  <mat-error *ngIf="profileForm.get('fullName')?.invalid && isEditing">
+                    Vui lòng nhập tên hợp lệ
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Email</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="email" 
+                    [readonly]="!isEditing"
+                  >
+                  <mat-error *ngIf="profileForm.get('email')?.invalid && isEditing">
+                    Vui lòng nhập email hợp lệ
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Số điện thoại</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="phoneNumber" 
+                    [readonly]="!isEditing"
+                  >
+                  <mat-error *ngIf="profileForm.get('phoneNumber')?.invalid && isEditing">
+                    Số điện thoại không hợp lệ
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Ngày sinh</mat-label>
+                  <input 
+                    matInput 
+                    [matDatepicker]="picker" 
+                    formControlName="dateOfBirth" 
+                    [readonly]="!isEditing"
+                  >
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <mat-error *ngIf="profileForm.get('dateOfBirth')?.invalid && isEditing">
+                    Vui lòng chọn ngày sinh hợp lệ (Trên 16 tuổi)
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="col-12">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Địa chỉ</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="address" 
+                    [readonly]="!isEditing"
+                  >
+                  <mat-error *ngIf="profileForm.get('address')?.invalid && isEditing">
+                    Địa chỉ không hợp lệ
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="p-3">
+          <button 
+            mat-stroked-button 
+            color="accent" 
+            (click)="togglePasswordChange()"
+            *ngIf="!isChangingPassword"
+          >
+            <mat-icon>lock</mat-icon>
+            Đổi mật khẩu
+          </button>
+
+          <ng-container *ngIf="!isChangingPassword">
+            <button 
+              mat-stroked-button 
+              color="primary" 
+              *ngIf="!isEditing" 
+              (click)="toggleEdit()"
+            >
+              <mat-icon>edit</mat-icon>
+              Chỉnh sửa
+            </button>
+
+            <ng-container *ngIf="isEditing">
+              <button 
+                mat-stroked-button 
+                color="warn" 
+                (click)="toggleEdit()"
+              >
+                Hủy
+              </button>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="onSubmit()" 
+                [disabled]="!profileForm.valid"
+              >
+                Lưu thay đổi
+              </button>
+            </ng-container>
+          </ng-container>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Password Change Modal -->
+  <div class="modal" [class.show]="isChangingPassword" [ngStyle]="{'display': isChangingPassword ? 'block' : 'none'}">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title"><mat-icon class="me-2">lock</mat-icon>Đổi mật khẩu</h3>
+          <button type="button" class="btn-close" aria-label="Close" (click)="togglePasswordChange()"></button>
+        </div>
+        
+        <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+          <div class="modal-body">
+            <div class="form-group mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Mật khẩu hiện tại</mat-label>
+                <input 
+                  matInput 
+                  type="password"
+                  formControlName="currentPassword"
+                >
+                <mat-error *ngIf="changePasswordForm.get('currentPassword')?.invalid">
+                  Mật khẩu phải từ 8 ký tự trở lên
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-group mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Mật khẩu mới</mat-label>
+                <input 
+                  matInput 
+                  type="password"
+                  formControlName="newPassword"
+                >
+                <mat-error *ngIf="changePasswordForm.get('newPassword')?.invalid">
+                  Mật khẩu không đủ mạnh
+                </mat-error>
+              </mat-form-field>
+              
+
+              <div class="password-strength-bar mt-1">
+                <div 
+                  class="strength-segment" 
+                  *ngFor="let _ of [1,2,3,4,5]"
+                  [ngClass]="{
+                    'active': _ <= getPasswordStrength(changePasswordForm.get('newPassword')?.value),
+                    'weak': _ <= getPasswordStrength(changePasswordForm.get('newPassword')?.value) && getPasswordStrength(changePasswordForm.get('newPassword')?.value) <= 2,
+                    'medium': _ <= getPasswordStrength(changePasswordForm.get('newPassword')?.value) && getPasswordStrength(changePasswordForm.get('newPassword')?.value) > 2 && getPasswordStrength(changePasswordForm.get('newPassword')?.value) < 4,
+                    'strong': _ <= getPasswordStrength(changePasswordForm.get('newPassword')?.value) && getPasswordStrength(changePasswordForm.get('newPassword')?.value) >= 4
+                  }"
+                ></div>
+              </div>
+              <div class="password-hint mt-1 mb-2">
+                Mật khẩu mạnh: Ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Xác nhận mật khẩu mới</mat-label>
+                <input 
+                  matInput 
+                  type="password"
+                  formControlName="confirmPassword"
+                >
+                <mat-error *ngIf="changePasswordForm.get('confirmPassword')?.errors?.['required']">
+                  Vui lòng xác nhận mật khẩu
+                </mat-error>
+                <mat-error *ngIf="changePasswordForm.get('confirmPassword')?.errors?.['passwordMismatch']">
+                  Mật khẩu xác nhận không khớp
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button 
+              mat-stroked-button 
+              type="button"
+              (click)="togglePasswordChange()"
+            >
+              Hủy
+            </button>
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit"
+              [disabled]="changePasswordForm.invalid"
+            >
+              Đổi mật khẩu
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal backdrop -->
+  <div class="modal-backdrop fade" 
+       [ngClass]="{'show': isChangingPassword}"
+       [ngStyle]="{'display': isChangingPassword ? 'block' : 'none'}"
+       (click)="togglePasswordChange()">
+  </div>
+</div>

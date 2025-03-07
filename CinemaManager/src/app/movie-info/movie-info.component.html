@@ -23,8 +23,8 @@
                       {{movie.genre}}
                     </span>
                     <span class="rating" *ngIf="movie.rating">
-                      <mat-icon>star</mat-icon>
-                      {{movie.rating}}/5
+                      <mat-icon >star</mat-icon>
+                      {{movie.rating}}/10
                     </span>
                   </div>
                 </div>
@@ -71,39 +71,202 @@
             </mat-card>
           </div>
   
-          <div class="col-md-4">
-            <mat-card class="booking-card">
-              <mat-card-header>
-                <mat-card-title>Đặt vé</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Chọn ngày</mat-label>
-                  <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-  
-                <div class="showtimes-grid">
+        <div class="col-md-4">
+           
+          <mat-card class="booking-card">
+            <mat-card-header>
+              <mat-card-title>Đặt vé</mat-card-title>
+              <mat-card-subtitle *ngIf="movie?.ageRestriction">
+                Giới hạn độ tuổi: {{movie.ageRestriction}}
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="booking-steps">
+   
+                <h3 class="mb-3">
+                  <span class="step-number">1</span> Chọn rạp chiếu
+                </h3>
+                <div class="theaters-grid">
                   <button mat-stroked-button 
-                          *ngFor="let time of showtimes"
-                          [class.selected]="selectedTime === time"
-                          (click)="selectShowtime(time)">
-                    {{time}}
+                          *ngFor="let cinema of availableCinemas"
+                          [class.selected]="selectedCinema === cinema"
+                          (click)="selectCinema(cinema)">
+                    {{cinema}}
                   </button>
                 </div>
-              </mat-card-content>
-              <mat-card-actions>
-                <button mat-raised-button color="primary" class="w-100" 
-                        [disabled]="!selectedTime"
-                        (click)="bookTicket()">
-                  <mat-icon>local_activity</mat-icon>
-                  Đặt vé ngay
-                </button>
-              </mat-card-actions>
-            </mat-card>
+
+           
+                <div *ngIf="selectedCinema">
+                  <h3 class="mb-3 mt-4">
+                    <span class="step-number">2</span> Chọn ngày
+                  </h3>
+                  <div class="date-grid">
+                    <button mat-stroked-button 
+                            *ngFor="let date of availableDates"
+                            [class.selected]="selectedDate === date"
+                            (click)="selectDate(date)">
+                      {{date}}
+                    </button>
+                  </div>
+                </div>
+
+      
+                <div *ngIf="selectedCinema && selectedDate">
+                  <h3 class="mb-3 mt-4">
+                    <span class="step-number">3</span> Chọn suất chiếu
+                  </h3>
+                  <div class="showtimes-grid">
+                    <button mat-stroked-button 
+                            *ngFor="let time of availableTimes"
+                            [class.selected]="selectedTime === time"
+                            (click)="selectTime(time)">
+                      {{time}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" class="w-100" 
+                      [disabled]="!selectedCinema || !selectedDate || !selectedTime"
+                      (click)="bookTicket()">
+                <mat-icon>local_activity</mat-icon>
+                Đặt vé ngay
+              </button>
+            </mat-card-actions>
+          </mat-card>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+
+<!-- Seat Selection Modal -->
+<div class="seat-selection-modal" [class.show]="showSeatSelection">
+  <div class="seat-selection-container">
+    <div class="seat-selection-header">
+      <h2>Chọn ghế ngồi</h2>
+      <button mat-icon-button (click)="closeSeatSelection()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="seat-selection-content">
+      <mat-progress-bar *ngIf="isLoadingSeats" mode="indeterminate" color="primary"></mat-progress-bar>
+      
+      <div *ngIf="!isLoadingSeats" class="booking-info">
+        <div class="movie-info-compact">
+          <img [src]="movie?.posterUrl || 'assets/images/default-poster.jpg'" [alt]="movie?.title" class="compact-poster">
+          <div class="movie-details">
+            <h3>{{movie?.title}}</h3>
+            <p>{{selectedCinema}} | {{selectedDate}} | {{selectedTime}}</p>
+            <p *ngIf="roomInfo">{{roomInfo.name}} | {{roomInfo.type}}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="!isLoadingSeats && availableSeats.length > 0" class="seat-layout-section">
+        <!-- Price Type Selection -->
+        <div class="price-type-selection">
+          <h4>Loại vé:</h4>
+          <mat-button-toggle-group [value]="selectedPriceType" (change)="changePriceType($event.value)">
+            <mat-button-toggle value="standard">Thường</mat-button-toggle>
+            <mat-button-toggle value="student">Sinh viên</mat-button-toggle>
+            <mat-button-toggle value="child">Trẻ em</mat-button-toggle>
+            <mat-button-toggle value="senior">Người cao tuổi</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        
+        <!-- Screen indicator -->
+        <div class="screen-container">
+          <div class="screen">
+            <span>Màn hình</span>
+          </div>
+        </div>
+        
+        <!-- Seat map -->
+        <div class="seat-map">
+          <div class="seat-row" *ngFor="let row of getUniqueRows()">
+            <div class="row-label">{{row}}</div>
+            <div class="seats">
+              <div *ngFor="let seat of getSeatsInRow(row)" 
+                   class="seat"
+                   [class.vip]="seat.seatType === 'VIP'"
+                   [class.standard]="seat.seatType === 'Standard'"
+                   [class.selected]="isSeatSelected(seat)"
+                   (click)="toggleSeatSelection(seat)">
+                {{seat.seatNumber}}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Seat legend -->
+        <div class="seat-legend">
+          <div class="legend-item">
+            <div class="seat-sample standard"></div>
+            <span>Ghế thường</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample vip"></div>
+            <span>Ghế VIP</span>
+          </div>
+          <div class="legend-item">
+            <div class="seat-sample selected"></div>
+            <span>Ghế đã chọn</span>
+          </div>
+        </div>
+        
+        <!-- Selection summary -->
+        <div *ngIf="selectedSeats.length > 0" class="selection-summary">
+          <div class="summary-info">
+            <div class="summary-row">
+              <span>Đã chọn:</span>
+              <span>{{selectedSeats.length}} ghế ({{getSelectedSeatLabels()}})</span>
+            </div>
+            <div class="summary-row">
+              <span>Loại vé:</span>
+              <span>
+                <ng-container [ngSwitch]="selectedPriceType">
+                  <ng-container *ngSwitchCase="'student'">Sinh viên</ng-container>
+                  <ng-container *ngSwitchCase="'child'">Trẻ em</ng-container>
+                  <ng-container *ngSwitchCase="'senior'">Người cao tuổi</ng-container>
+                  <ng-container *ngSwitchDefault>Thường</ng-container>
+                </ng-container>
+              </span>
+            </div>
+            <div class="summary-row total">
+              <span>Tổng tiền:</span>
+              <span>{{getTotalPrice() | number:'1.0-0'}} VND</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="!isLoadingSeats && availableSeats.length === 0" class="no-seats">
+        <mat-icon class="empty-icon">event_busy</mat-icon>
+        <p>Không có ghế trống cho suất chiếu này</p>
+        <button mat-raised-button color="primary" (click)="closeSeatSelection()">
+          Chọn suất chiếu khác
+        </button>
+      </div>
+    </div>
+    
+    <div class="seat-selection-actions">
+      <button mat-stroked-button (click)="closeSeatSelection()">
+        Hủy
+      </button>
+      <button mat-raised-button color="primary" 
+              [disabled]="selectedSeats.length === 0" 
+              (click)="proceedToCheckout()">
+        Tiếp tục thanh toán
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal backdrop -->
+<div class="modal-backdrop" 
+     [class.show]="showSeatSelection"
+     (click)="closeSeatSelection()"></div>

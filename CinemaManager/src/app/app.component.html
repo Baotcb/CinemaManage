@@ -19,7 +19,7 @@
             <a mat-button routerLink="/coming" routerLinkActive="active-link">
               <mat-icon class="me-1">upcoming</mat-icon> Sắp Chiếu
             </a>
-            <a mat-button routerLink="/cinemas" routerLinkActive="active-link">
+            <a mat-button routerLink="/cinema" routerLinkActive="active-link">
               <mat-icon class="me-1">location_on</mat-icon> Rạp Chiếu
             </a>
             <a mat-button routerLink="/promotions" routerLinkActive="active-link">
@@ -30,27 +30,40 @@
         
         <div class="col-md-4">
           <div class="d-flex justify-content-end align-items-center">
-            <!-- <mat-form-field appearance="outline" class="search-form me-2" hideRequiredMarker>
-              <input matInput placeholder="Tìm phim, rạp..." #searchInput>
-              <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field> -->
-            
-            <!-- <button mat-mini-fab color="accent" class="me-2" aria-label="Shopping cart">
-              <mat-icon>shopping_cart</mat-icon>
-            </button> -->
-            
-            <button mat-flat-button color="accent" class="d-none d-md-block btn btn-light m-2 mr-*" routerLink="/login">
-              <mat-icon class="me-1">account_circle</mat-icon> Đăng Nhập
-            </button>
-            <button mat-flat-button color="accent" class="d-none d-md-block btn btn-danger m-2 ml-*" routerLink="/register">
+            <!-- Show this if user is not logged in -->
+            <ng-container *ngIf="!isLoggedIn">
+              <button mat-flat-button color="accent" class="d-none d-md-block btn btn-light m-2" routerLink="/login">
+                <mat-icon class="me-1">account_circle</mat-icon> Đăng Nhập
+              </button>
+              <button mat-flat-button color="accent" class="d-none d-md-block btn btn-danger m-2" routerLink="/register">
                 <mat-icon class="me-1">account_circle</mat-icon> Đăng Ký
               </button>
-            
-            <button mat-icon-button class="d-md-block d-md-none">
-              <mat-icon>account_circle</mat-icon>
-            </button>
+            </ng-container>
+        
+            <!-- Show this if user is logged in -->
+            <ng-container *ngIf="isLoggedIn">
+              <button mat-button [matMenuTriggerFor]="userMenu" class="d-none d-md-block">
+                <mat-icon class="me-1">person</mat-icon> Tài khoản
+              </button>
+              <mat-menu #userMenu="matMenu">
+                <button mat-menu-item routerLink="/profile">
+                  <mat-icon>account_box</mat-icon>
+                  <span>Hồ sơ</span>
+                </button>
+                <button mat-menu-item routerLink="/booking">
+                  <mat-icon>confirmation_number</mat-icon>
+                  <span>Vé đã đặt</span>
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="logout()">
+                  <mat-icon>exit_to_app</mat-icon>
+                  <span>Đăng xuất</span>
+                </button>
+              </mat-menu>
+            </ng-container>
           </div>
         </div>
+        
       </div>
     </div>
   </mat-toolbar>
@@ -79,12 +92,25 @@
           <mat-icon class="me-3">card_giftcard</mat-icon> Khuyến Mãi
         </a>
         <mat-divider class="my-2"></mat-divider>
-        <a mat-button class="w-100 justify-content-start" routerLink="/login">
-          <mat-icon class="me-3">login</mat-icon> Đăng Nhập
-        </a>
-        <a mat-button class="w-100 justify-content-start" routerLink="/register">
-          <mat-icon class="me-3">person_add</mat-icon> Đăng Ký
-        </a>
+        <ng-container *ngIf="!isLoggedIn">
+          <a mat-button class="w-100 justify-content-start" routerLink="/login">
+            <mat-icon class="me-3">login</mat-icon> Đăng Nhập
+          </a>
+          <a mat-button class="w-100 justify-content-start" routerLink="/register">
+            <mat-icon class="me-3">person_add</mat-icon> Đăng Ký
+          </a>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <a mat-button class="w-100 justify-content-start" routerLink="/profile">
+            <mat-icon class="me-3">account_box</mat-icon> Hồ sơ
+          </a>
+          <a mat-button class="w-100 justify-content-start" routerLink="/booking">
+            <mat-icon class="me-3">confirmation_number</mat-icon> Vé đã đặt
+          </a>
+          <button mat-button class="w-100 justify-content-start" (click)="logout()">
+            <mat-icon class="me-3">exit_to_app</mat-icon> Đăng xuất
+          </button>
+        </ng-container>
       </div>
     </mat-sidenav>
     <mat-sidenav-content>

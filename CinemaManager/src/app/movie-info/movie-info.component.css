@@ -109,3 +109,378 @@
       grid-template-columns: 1fr;
     }
   }
+
+  .theaters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .theaters-grid button,
+  .showtimes-grid button {
+    width: 100%;
+    white-space: normal;
+    line-height: 1.2;
+    padding: 8px;
+  }
+  
+  .theaters-grid button.selected,
+  .showtimes-grid button.selected {
+    background-color: #673ab7;
+    color: white;
+  }
+  
+  mat-card-subtitle {
+    color: #f44336;
+    font-weight: 500;
+  }
+  
+  h3 {
+    color: #333;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 576px) {
+    .theaters-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Add these to the existing CSS */
+.step-number {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #673ab7;
+  color: white;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 8px;
+}
+
+.booking-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.date-grid button {
+  width: 100%;
+  white-space: normal;
+  line-height: 1.2;
+  padding: 8px;
+}
+
+.date-grid button.selected {
+  background-color: #673ab7;
+  color: white;
+}
+
+
+/* Seat Selection Modal */
+.seat-selection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1050;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat-selection-modal.show {
+  display: flex;
+}
+
+.seat-selection-container {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 1051;
+}
+
+.seat-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.seat-selection-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.seat-selection-content {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.seat-selection-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1040;
+  display: none;
+}
+
+.modal-backdrop.show {
+  display: block;
+}
+
+/* Movie info in seat selection */
+.movie-info-compact {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.compact-poster {
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.movie-details {
+  flex: 1;
+}
+
+.movie-details h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.movie-details p {
+  margin: 0 0 0.25rem;
+  color: #666;
+}
+
+/* Price type selection */
+.price-type-selection {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-type-selection h4 {
+  margin: 0;
+}
+
+/* Screen */
+.screen-container {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.screen {
+  width: 80%;
+  height: 30px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  transform: perspective(100px) rotateX(-5deg);
+  color: #757575;
+  font-weight: 500;
+}
+
+/* Seat map */
+.seat-map {
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+}
+
+.row-label {
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #666;
+}
+
+.seats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.seat {
+  width: 35px;
+  height: 35px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.seat.standard {
+  background-color: #e0e0e0;
+  border: 1px solid #bdbdbd;
+}
+
+.seat.vip {
+  background-color: #ffd54f;
+  border: 1px solid #ffc107;
+}
+
+.seat.standard:hover, .seat.vip:hover {
+  transform: scale(1.05);
+}
+
+.seat.selected {
+  background-color: #673ab7;
+  color: white;
+  border: 1px solid #512da8;
+}
+
+/* Seat legend */
+.seat-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.seat-sample {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+.seat-sample.standard {
+  background-color: #e0e0e0;
+  border: 1px solid #bdbdbd;
+}
+
+.seat-sample.vip {
+  background-color: #ffd54f;
+  border: 1px solid #ffc107;
+}
+
+.seat-sample.selected {
+  background-color: #673ab7;
+  border: 1px solid #512da8;
+}
+
+/* Selection summary */
+.selection-summary {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.summary-row.total {
+  margin-top: 1rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 0.75rem;
+}
+
+/* No seats available */
+.no-seats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: #bdbdbd;
+  margin-bottom: 1rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .seat-selection-container {
+    width: 95%;
+    height: 95vh;
+    max-height: 95vh;
+  }
+  
+  .seat {
+    width: 30px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
+  
+  .seat-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .price-type-selection {
+    overflow-x: auto;
+  }
+  
+  mat-button-toggle-group {
+    flex-wrap: nowrap;
+    min-width: max-content;
+  }
+}

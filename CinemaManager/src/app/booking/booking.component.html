@@ -1,0 +1,168 @@
+<div class="booking-history-container">
+    <div class="container py-5">
+      <h1 class="text-center mb-4">Lịch sử đặt vé</h1>
+  
+      <div *ngIf="isLoading" class="text-center loading-spinner">
+        <mat-spinner diameter="60" class="mx-auto"></mat-spinner>
+        <p class="mt-3">Đang tải lịch sử đặt vé...</p>
+      </div>
+  
+      <div *ngIf="!isLoading && error" class="alert alert-warning text-center">
+        <mat-icon>warning</mat-icon>
+        <p class="mb-0">{{error}}</p>
+        <button mat-raised-button color="primary" routerLink="/login" class="mt-3">
+          Đăng nhập
+        </button>
+      </div>
+  
+      <div *ngIf="!isLoading && !error" class="booking-content">
+        <!-- Tabs -->
+        <mat-tab-group (selectedTabChange)="filterBookings($event.index)" animationDuration="200ms" class="booking-tabs">
+          <mat-tab label="Tất cả ({{bookings.length}})"></mat-tab>
+          <mat-tab label="Sắp tới"></mat-tab>
+          <mat-tab label="Đã qua"></mat-tab>
+        </mat-tab-group>
+  
+        <!-- Empty state -->
+        <div *ngIf="filteredBookings.length === 0" class="empty-state text-center py-5">
+          <mat-icon class="empty-icon">event_busy</mat-icon>
+          <h3>Không có đặt vé nào</h3>
+          <p *ngIf="activeTab === 0">Bạn chưa đặt vé nào.</p>
+          <p *ngIf="activeTab === 1">Bạn không có vé cho các buổi chiếu sắp tới.</p>
+          <p *ngIf="activeTab === 2">Bạn không có lịch sử đặt vé nào đã qua.</p>
+          <button mat-raised-button color="primary" routerLink="/showing-movie">
+            Đặt vé ngay
+          </button>
+        </div>
+  
+        <!-- Booking list -->
+        <div *ngIf="filteredBookings.length > 0" class="booking-list">
+          <mat-card *ngFor="let booking of filteredBookings" class="booking-card mb-4">
+            <!-- <div class="film-strip film-strip-left"></div>
+            <div class="film-strip film-strip-right"></div> -->
+            <mat-card-header>
+              <div class="booking-header">
+                <div class="booking-info">
+                  <span class="booking-id">Mã đặt vé: #{{booking.bookingId}}</span>
+                  <span class="booking-date">{{formatDate(booking.bookingDate)}}</span>
+                </div>
+                <div class="booking-status">
+                  <span class="status-chip" [ngClass]="getStatusColor(booking.bookingStatus)">
+                    {{booking.bookingStatus}}
+                  </span>
+                </div>
+              </div>
+            </mat-card-header>
+  
+            <mat-card-content>
+              <div class="booking-summary">
+                <ng-container *ngIf="booking.bookingDetails.length > 0">
+                  <div *ngFor="let showtimeGroup of getGroupedSeats(booking.bookingDetails) | keyvalue" class="movie-info-section">
+                    <div class="movie-details">
+                      <img [src]="showtimeGroup.value[0].showtimeInfo.movieInfo.posterUrl" [alt]="showtimeGroup.value[0].showtimeInfo.movieInfo.title" class="movie-poster">
+                      <div class="movie-text">
+                        <h3 class="movie-title">{{showtimeGroup.value[0].showtimeInfo.movieInfo.title}}</h3>
+                        <p class="showtime">
+                          <mat-icon>event</mat-icon>
+                          {{formatShowtime(showtimeGroup.value[0].showtimeInfo.startTime)}}
+                        </p>
+                        <p class="duration">
+                          <mat-icon>schedule</mat-icon>
+                          {{showtimeGroup.value[0].showtimeInfo.movieInfo.duration}} phút
+                        </p>
+                        <div class="seats-info">
+                          <p class="seat-count">
+                            <mat-icon>event_seat</mat-icon>
+                            {{showtimeGroup.value.length}} ghế:
+                            <span class="seat-labels">
+                              <ng-container *ngFor="let detail of showtimeGroup.value; let i = index">
+                                {{detail.seatInfo.seatRow}}{{detail.seatInfo.seatNumber}}{{i < showtimeGroup.value.length - 1 ? ', ' : ''}}
+                              </ng-container>
+                            </span>
+                          </p>
+                        </div>
+                        <div class="ticket-types">
+                          <ng-container *ngFor="let type of countTicketsByType(showtimeGroup.value) | keyvalue">
+                            <span class="ticket-type-badge">
+                              {{type.key === 'STANDARD' ? 'Thường' : type.key === 'Student' ? 'Sinh viên' : type.key === 'Child' ? 'Trẻ em' : 'Người cao tuổi'}}:
+                              <strong>{{type.value}}</strong>
+                            </span>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <!-- Additional booking details when expanded -->
+                    <div *ngIf="expandedBookingId === booking.bookingId" class="expanded-details">
+                      <mat-divider class="my-3"></mat-divider>
+                      
+                      <div class="payment-details">
+                        <h4>Chi tiết thanh toán</h4>
+                        <div class="payment-grid">
+                          <div class="payment-item">
+                            <span class="label">Phương thức:</span>
+                            <span class="value">{{booking.paymentMethod}}</span>
+                          </div>
+                          <div class="payment-item">
+                            <span class="label">Mã giao dịch:</span>
+                            <span class="value">{{booking.transactionId}}</span>
+                          </div>
+                          <div class="payment-item">
+                            <span class="label">Trạng thái:</span>
+                            <span class="value" [ngClass]="getStatusColor(booking.paymentStatus)">{{booking.paymentStatus}}</span>
+                          </div>
+                          <div class="payment-item">
+                            <span class="label">Ngày thanh toán:</span>
+                            <span class="value">{{formatDate(booking.paymentDate)}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="price-summary mt-3">
+                        <div class="price-item">
+                          <span>Tổng tiền vé:</span>
+                          <span>{{booking.totalAmount | number:'1.0-0'}} VND</span>
+                        </div>
+                        <div *ngIf="booking.discountAmount > 0" class="price-item discount">
+                          <span>Giảm giá:</span>
+                          <span>-{{booking.discountAmount | number:'1.0-0'}} VND</span>
+                        </div>
+                        <div *ngIf="booking.additionalPurchases > 0" class="price-item">
+                          <span>Thức ăn & đồ uống:</span>
+                          <span>{{booking.additionalPurchases | number:'1.0-0'}} VND</span>
+                        </div>
+                        <div class="price-item total">
+                          <span>Tổng thanh toán:</span>
+                          <span>{{booking.totalAmount - booking.discountAmount + booking.additionalPurchases | number:'1.0-0'}} VND</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </mat-card-content>
+  
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="toggleBookingDetails(booking.bookingId)">
+                <mat-icon>{{expandedBookingId === booking.bookingId ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
+                {{expandedBookingId === booking.bookingId ? 'Ẩn chi tiết' : 'Xem chi tiết'}}
+              </button>
+             
+              <!-- <button *ngIf="canCancelBooking(booking)" 
+                        mat-stroked-button 
+                        color="warn" 
+                        (click)="confirmCancelBooking(booking.bookingId)">
+                    <mat-icon>cancel</mat-icon>
+                    Hủy đặt vé
+                </button> -->
+           
+              <button mat-raised-button color="primary"  (click)="confirmCancelBooking(booking.bookingId)">
+                <mat-icon>cancel</mat-icon>
+                Hủy đặt vé
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>

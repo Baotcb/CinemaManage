@@ -1,0 +1,73 @@
+<div class="cinema-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <h1>Hệ Thống Rạp Chiếu Phim</h1>
+        <p>Khám phá các rạp chiếu phim hiện đại và tiện nghi</p>
+      </div>
+    </section>
+  
+    <!-- Filter Section -->
+    <section class="filter-section">
+      <div class="container">
+        <mat-form-field appearance="outline">
+          <mat-label>Chọn khu vực</mat-label>
+          <mat-select [(ngModel)]="selectedDistrict" (selectionChange)="filterByDistrict($event.value)">
+            <mat-option *ngFor="let district of districts" [value]="district.value">
+              {{district.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </section>
+  
+    <!-- Cinemas List -->
+    <section class="cinemas-section">
+      <div class="container">
+        <div *ngIf="isLoading" class="loading-spinner">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+  
+        <div class="row g-4" *ngIf="!isLoading">
+          <!-- Update the cinema card section -->
+          <div class="col-md-6 col-lg-4" *ngFor="let cinema of cinemas">
+            <mat-card class="cinema-card h-100">
+              <img mat-card-image 
+                  [src]="cinema.imageUrl || 'assets/images/default-cinema.jpg'" 
+                  [alt]="cinema.name">
+              <mat-card-content>
+                <h2>{{cinema.name}}</h2>
+                <div class="cinema-info">
+                  <p class="address">
+                    <mat-icon>location_on</mat-icon>
+                    {{cinema.address}}, {{cinema.city}}
+                  </p>
+                  <p class="phone">
+                    <mat-icon>phone</mat-icon>
+                    {{cinema.phoneNumber}}
+                  </p>
+                  <p class="email">
+                    <mat-icon>email</mat-icon>
+                    {{cinema.email}}
+                  </p>
+                </div>
+                <p class="description">{{cinema.description}}</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary" [routerLink]="['/cinema', cinema.cinemaId]">
+                  <mat-icon>movie</mat-icon>
+                  Xem Lịch Chiếu
+                </button>
+                <a mat-stroked-button color="accent" 
+                  [href]="'https://www.google.com/maps/search/?api=1&query=' + cinema.address" 
+                  target="_blank">
+                  <mat-icon>directions</mat-icon>
+                  Chỉ Đường
+                </a>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

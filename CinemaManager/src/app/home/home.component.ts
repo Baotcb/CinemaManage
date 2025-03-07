@@ -75,6 +75,7 @@ export class HomeComponent implements OnInit {
     apiUrl = 'https://localhost:7057/api/Movie/GetUpComingMovies';
     this.httpClient.get(apiUrl).subscribe((data: any) => {
       this.upcomingMovies = data;
+      console.log('phim sap chieu :', this.upcomingMovies);
     });
    }
 

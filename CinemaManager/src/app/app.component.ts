@@ -5,8 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -21,15 +23,28 @@ import { MatDividerModule } from '@angular/material/divider';
     MatFormFieldModule,
     RouterModule,
     MatDividerModule,
+    MatMenuModule,
+    CommonModule
   ],
   standalone: true
 })
 export class AppComponent {
   title = 'CinemaManager';
   @ViewChild('sidenav') sidenav!: MatSidenav;
+
+  constructor(private router: Router) {}
+
+  get isLoggedIn(): boolean {
+    return !!localStorage.getItem('userId');
+  }
+
   toggleSidenav() {
     this.sidenav.toggle();
-    console.log('toggle');
   }
-  
+
+  logout() {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+    this.router.navigate(['/']);
+  }
 }
