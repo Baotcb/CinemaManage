@@ -190,13 +190,17 @@
           <div class="seat-row" *ngFor="let row of getUniqueRows()">
             <div class="row-label">{{row}}</div>
             <div class="seats">
+              <!-- In your seat-selection template -->
               <div *ngFor="let seat of getSeatsInRow(row)" 
-                   class="seat"
-                   [class.vip]="seat.seatType === 'VIP'"
-                   [class.standard]="seat.seatType === 'Standard'"
-                   [class.selected]="isSeatSelected(seat)"
-                   (click)="toggleSeatSelection(seat)">
-                {{seat.seatNumber}}
+              class="seat"
+                  [class.vip]="seat.seatType === 'VIP'"
+                  [class.standard]="seat.seatType === 'Standard'"
+                  [class.selected]="isSeatSelected(seat)"
+                  [class.booked]="!isSeatAvailable(seat)"
+                  [class.cancelled]="seat.bookingStatus === 'Cancelled'"
+                  [matTooltip]="getSeatTooltip(seat)"
+                  (click)="toggleSeatSelection(seat)">
+                  {{seat.seatNumber}}
               </div>
             </div>
           </div>

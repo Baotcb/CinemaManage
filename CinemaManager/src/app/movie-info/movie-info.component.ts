@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 interface Movie {
   movieId: number;
@@ -50,16 +51,33 @@ interface AvailableSeat {
   showtimeId: number;
   startTime: string;
   endTime: string;
+  seatStatus: string;
   standardPrice: number;
   studentPrice: number;
   childPrice: number;
   seniorPrice: number;
+  bookedTicketType: string | null;
+  bookedPrice: number;
+  bookingId: number;
+  bookingStatus: string | null;
+  bookedByUsername: string | null;
+  bookingDate: string | null;
+  showtimeInfo: {
+    showtimeId: number;
+    roomId: number;
+    roomName: string;
+    roomType: string;
+    movieTitle: string;
+    startTime: string;
+    endTime: string;
+    basePrice: number;
+  };
 }
 
 @Component({
   selector: 'app-movie-info',
   standalone: true,
-  imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule, MatProgressBarModule,MatButtonToggleModule],
+  imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule, MatProgressBarModule,MatButtonToggleModule,MatTooltipModule],
   templateUrl: './movie-info.component.html',
   styleUrls: ['./movie-info.component.css']
 })
@@ -241,34 +259,33 @@ export class MovieInfoComponent implements OnInit {
   bookTicket() {
     if (!this.selectedCinema || !this.selectedDate || !this.selectedTime || !this.movie) return;
   
-  this.isLoadingSeats = true;
-  this.showSeatSelection = true;
-  this.selectedSeats = [];
-  
-  const [day, month, year] = this.selectedDate.split('/').map(Number);
-  const dateFormatted = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-  
-  // Time is already in 24-hour format, so no need to split by space
-  const startTimeFormatted = this.selectedTime;
-  
-  // Calculate end time based on movie duration
-  const [hours, minutes, seconds] = startTimeFormatted.split(':').map(Number);
-  
-  // Create a Date object for time calculation
-  const startDate = new Date();
-  startDate.setHours(hours, minutes, seconds || 0);
-  
-  // Add movie duration in minutes
-  const endDate = new Date(startDate.getTime() + (this.movie.duration * 60 * 1000));
-  
-  const endTimeFormatted = `${endDate.getHours().toString().padStart(2, '0')}:${
-    endDate.getMinutes().toString().padStart(2, '0')}:${
-    endDate.getSeconds().toString().padStart(2, '0')}`;
-  
-  console.log(`Movie start time: ${startTimeFormatted}`);
-  console.log(`Movie duration: ${this.movie.duration} minutes`);
-  console.log(`Movie end time: ${endTimeFormatted}`);
+    this.isLoadingSeats = true;
+    this.showSeatSelection = true;
+    this.selectedSeats = [];
     
+    const [day, month, year] = this.selectedDate.split('/').map(Number);
+    const dateFormatted = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    
+    const startTimeFormatted = this.selectedTime;
+    
+    // Calculate end time based on movie duration
+    const [hours, minutes, seconds] = startTimeFormatted.split(':').map(Number);
+    
+    // Create a Date object for time calculation
+    const startDate = new Date();
+    startDate.setHours(hours, minutes, seconds || 0);
+    
+    // Add movie duration in minutes
+    const endDate = new Date(startDate.getTime() + (this.movie.duration * 60 * 1000));
+    
+    const endTimeFormatted = `${endDate.getHours().toString().padStart(2, '0')}:${
+      endDate.getMinutes().toString().padStart(2, '0')}:${
+      endDate.getSeconds().toString().padStart(2, '0')}`;
+    
+    console.log(`Movie start time: ${startTimeFormatted}`);
+    console.log(`Movie duration: ${this.movie.duration} minutes`);
+    console.log(`Movie end time: ${endTimeFormatted}`);
+      
     // Make API call with both start and end times
     const apiUrl = `https://localhost:7057/api/Seat/GetAvailableSeats/${this.movieId}/${
       encodeURIComponent(this.selectedCinema)}/${dateFormatted}/${
@@ -276,7 +293,8 @@ export class MovieInfoComponent implements OnInit {
     
     this.http.get<AvailableSeat[]>(apiUrl).subscribe({
       next: (seats) => {
-        this.availableSeats = seats;
+        // Filter only available seats
+        this.availableSeats = seats.filter(seat => seat.seatStatus === "Available");
         
         // Get room info from first seat (all seats will be in same room)
         if (seats.length > 0) {
@@ -297,6 +315,21 @@ export class MovieInfoComponent implements OnInit {
         });
       }
     });
+  }
+  isSeatAvailable(seat: AvailableSeat): boolean {
+    return seat.seatStatus === "Available";
+  }
+  
+  toggleSeatSelection(seat: AvailableSeat): void {
+    // Only allow selection if seat is available
+    if (!this.isSeatAvailable(seat)) return;
+    
+    const index = this.selectedSeats.findIndex(s => s.seatId === seat.seatId);
+    if (index !== -1) {
+      this.selectedSeats.splice(index, 1);
+    } else {
+      this.selectedSeats.push(seat);
+    }
   }
   convertTo24HourFormat(timeStr: string): string {
     // Check if the time already has AM/PM indicator
@@ -332,7 +365,18 @@ export class MovieInfoComponent implements OnInit {
   
   getUniqueRows(): string[] {
     const rows = Array.from(new Set(this.availableSeats.map(seat => seat.seatRow)));
-    return rows.sort(); // Sort alphabetically
+    
+    // Sort rows alphabetically but ensure letters come before numbers
+    return rows.sort((a, b) => {
+      const isALetter = isNaN(Number(a));
+      const isBLetter = isNaN(Number(b));
+      
+      if (isALetter && !isBLetter) return -1;
+      if (!isALetter && isBLetter) return 1;
+      
+      if (isALetter) return a.localeCompare(b);
+      return Number(a) - Number(b);
+    });
   }
   
   getSeatsInRow(row: string): AvailableSeat[] {
@@ -340,15 +384,17 @@ export class MovieInfoComponent implements OnInit {
       .filter(seat => seat.seatRow === row)
       .sort((a, b) => a.seatNumber - b.seatNumber);
   }
-  
-  toggleSeatSelection(seat: AvailableSeat): void {
-    const index = this.selectedSeats.findIndex(s => s.seatId === seat.seatId);
-    if (index !== -1) {
-      this.selectedSeats.splice(index, 1);
+  getSeatTooltip(seat: AvailableSeat): string {
+    if (seat.seatStatus === "Available") {
+      return `Ghế ${seat.seatRow}${seat.seatNumber} (${seat.seatType})\nGiá: ${this.getSeatPrice(seat).toLocaleString('vi-VN')} VND`;
+    } else if (seat.bookingStatus === "Cancelled") {
+      return `Ghế ${seat.seatRow}${seat.seatNumber} - Đã hủy`;
     } else {
-      this.selectedSeats.push(seat);
+      return `Ghế ${seat.seatRow}${seat.seatNumber} - Đã đặt`;
     }
   }
+  
+
   
   isSeatSelected(seat: AvailableSeat): boolean {
     return this.selectedSeats.some(s => s.seatId === seat.seatId);

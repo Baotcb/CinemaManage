@@ -484,3 +484,31 @@
     min-width: max-content;
   }
 }
+/* Add to your movie-info.component.css file */
+
+.seat.booked {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  color: #bdbdbd;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.seat.cancelled {
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  color: #ef5350;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.seat.cancelled::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background-color: #ef5350;
+  transform: rotate(45deg);
+}
