@@ -13,7 +13,7 @@ interface IUser {
   email: string;
   password: string;
   phoneNumber: string;
-  role: number;
+  isAdmin: boolean;
 }
 
 @Component({
@@ -64,12 +64,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if user is already logged in (can add later)
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      // Optional: Validate token before redirecting
-      this.router.navigate(['/home']);
-    }
+   
   }
 
   onSubmit(): void {
@@ -94,10 +89,12 @@ export class LoginComponent implements OnInit {
         .pipe(
           tap((response: IUser) => {
             console.log('Login response:', response);
-            if (response && response.role != 1) {
+            localStorage.setItem('isAdmin', response.isAdmin.toString());
+            if (response && response.isAdmin != true) {
 
               localStorage.setItem('username', response.username);
               localStorage.setItem('userId', response.userId.toString());
+              
               //localStorage.setItem('role', response.role.toString());
              
               if (this.loginForm.get('rememberMe')?.value) {
@@ -107,15 +104,14 @@ export class LoginComponent implements OnInit {
                 // sessionStorage.setItem('auth_token', 'user_token'); 
                 // sessionStorage.setItem('user_role', response.role.toString());
               }
-              
-             
               response.password = '';
               response.email = '';
               response.phoneNumber = '';
               
               this.router.navigate(['/home']);
             } else {
-              this.loginError = 'Không đủ quyền truy cập hoặc tài khoản không hợp lệ.';
+
+              this.router.navigate(['/admin/listcinema']);
             }
           }),
           catchError(error => {

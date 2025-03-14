@@ -1,0 +1,214 @@
+<div class="cinema-list-container">
+    <div class="cinema-list-header">
+      <h1>Cinema Management</h1>
+      <button mat-raised-button color="primary" (click)="openAddCinemaForm()" class="add-cinema-button">
+        <mat-icon>add</mat-icon> Add New Cinema
+      </button>
+    </div>
+    <div class="modal-overlay" *ngIf="openformaddcinema">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Add New Cinema</h2>
+          <button mat-icon-button (click)="cancelAddCinema()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        
+        <div class="modal-content">
+          <form #cinemaForm="ngForm" (ngSubmit)="submitAddCinema()">
+            <div class="form-grid">
+              <!-- Cinema Name -->
+              <mat-form-field appearance="outline">
+                <mat-label>Cinema Name</mat-label>
+                <input matInput name="name" [(ngModel)]="newCinema.name" required>
+                <mat-error>Cinema name is required</mat-error>
+              </mat-form-field>
+
+              <!-- Address -->
+              <mat-form-field appearance="outline">
+                <mat-label>Address</mat-label>
+                <input matInput name="address" [(ngModel)]="newCinema.address" required>
+                <mat-error>Address is required</mat-error>
+              </mat-form-field>
+
+              <!-- City -->
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput name="city" [(ngModel)]="newCinema.city" required>
+                <mat-error>City is required</mat-error>
+              </mat-form-field>
+
+              <!-- Phone -->
+              <mat-form-field appearance="outline">
+                <mat-label>Phone Number</mat-label>
+                <input matInput name="phone" [(ngModel)]="newCinema.phoneNumber" required>
+                <mat-error>Phone number is required</mat-error>
+              </mat-form-field>
+
+              <!-- Email -->
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" name="email" [(ngModel)]="newCinema.email" required email>
+                <mat-error>Valid email is required</mat-error>
+              </mat-form-field>
+
+
+
+              <!-- Description -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Description</mat-label>
+                <textarea matInput name="description" [(ngModel)]="newCinema.description" rows="3"></textarea>
+              </mat-form-field>
+
+             
+             
+
+              
+            </div>
+
+            <div class="form-actions">
+              <button mat-button type="button" (click)="cancelAddCinema()">Cancel</button>
+              <button mat-raised-button color="primary" type="submit" [disabled]="!cinemaForm.valid">
+                Save Cinema
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+    <div class="cinema-list-content">
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading cinemas...</p>
+      </div>
+  
+      <!-- Empty state -->
+      <mat-card *ngIf="!isLoading && cinemas.length === 0" class="empty-state">
+        <mat-card-content>
+          <mat-icon class="empty-icon">movie</mat-icon>
+          <h2>No Cinemas Found</h2>
+          <p>Click the "Add New Cinema" button to create your first cinema.</p>
+        </mat-card-content>
+      </mat-card>
+  
+      <!-- Cinema table -->
+      <div *ngIf="!isLoading && cinemas.length > 0" class="table-container mat-elevation-z2">
+        <table mat-table [dataSource]="cinemas" class="cinema-table">
+          <!-- Cinema ID Column -->
+          <ng-container matColumnDef="cinemaId">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let cinema">{{ cinema.cinemaId }}</td>
+          </ng-container>
+  
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let cinema">
+              <div class="cinema-name">
+                <img *ngIf="cinema.imageUrl" [src]="cinema.imageUrl" alt="{{ cinema.name }}" class="cinema-image">
+                <span>{{ cinema.name }}</span>
+              </div>
+            </td>
+          </ng-container>
+  
+          <!-- Address Column -->
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef>Address</th>
+            <td mat-cell *matCellDef="let cinema">{{ cinema.address }}</td>
+          </ng-container>
+  
+          <!-- City Column -->
+          <ng-container matColumnDef="city">
+            <th mat-header-cell *matHeaderCellDef>City</th>
+            <td mat-cell *matCellDef="let cinema">{{ cinema.city }}</td>
+          </ng-container>
+  
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Phone</th>
+            <td mat-cell *matCellDef="let cinema">{{ cinema.phoneNumber }}</td>
+          </ng-container>
+  
+          <!-- Active Status Column -->
+          <ng-container matColumnDef="isActive">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let cinema">
+              <span class="status-badge" [ngClass]="cinema.isActive ? 'active' : 'inactive'">
+                {{ cinema.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+          </ng-container>
+  
+        
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let cinema">
+              <div class="action-buttons">
+                <button mat-icon-button color="primary" matTooltip="View Rooms" (click)="viewRooms(cinema)">
+                  <mat-icon>meeting_room</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" matTooltip="Edit Cinema" (click)="editCinema(cinema)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button [color]="cinema.isActive ? 'warn' : 'primary'" 
+                        matTooltip="{{ cinema.isActive ? 'Deactivate' : 'Activate' }}" 
+                        (click)="toggleCinemaStatus(cinema)">
+                  <mat-icon>{{ cinema.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Delete Cinema" (click)="deleteCinema(cinema.cinemaId)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+  
+          <!-- Room details expansion -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let cinema" [attr.colspan]="displayedColumns.length">
+              <div class="cinema-detail" [@detailExpand]="cinema === expandedCinema ? 'expanded' : 'collapsed'">
+                <div class="cinema-detail-content">
+                  <h3>Cinema Details</h3>
+                  <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{ cinema.email }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Description:</span>
+                    <span class="detail-value">{{ cinema.description }}</span>
+                  </div>
+                  
+                  <h3 class="rooms-title">Rooms ({{ cinema.rooms?.length || 0 }})</h3>
+                  <div class="rooms-container">
+                    <mat-card *ngFor="let room of cinema.rooms" class="room-card">
+                      <div class="room-header">
+                        <span class="room-name">{{ room.roomName }}</span>
+                        <span class="room-type" [ngClass]="room.roomType.toLowerCase()">{{ room.roomType }}</span>
+                      </div>
+                      <div class="room-capacity">
+                        <mat-icon>event_seat</mat-icon>
+                        <span>{{ room.capacity }} seats</span>
+                      </div>
+                    </mat-card>
+                    
+                    <div *ngIf="!cinema.rooms || cinema.rooms.length === 0" class="no-rooms">
+                      No rooms available for this cinema
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let cinema; columns: displayedColumns;"
+              class="cinema-row"
+              [class.expanded-row]="expandedCinema === cinema"
+              (click)="expandedCinema = expandedCinema === cinema ? null : cinema"></tr>
+          <tr mat-row *matRowDef="let cinema; columns: ['expandedDetail']; when: isExpansionDetailRow"
+              class="detail-row"></tr>
+        </table>
+      </div>
+    </div>
+  </div>

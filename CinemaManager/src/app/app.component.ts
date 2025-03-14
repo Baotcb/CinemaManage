@@ -29,22 +29,33 @@ import { CommonModule } from '@angular/common';
   standalone: true
 })
 export class AppComponent {
+[x: string]: any;
   title = 'CinemaManager';
   @ViewChild('sidenav') sidenav!: MatSidenav;
+  @ViewChild('adminSidenav') adminSidenav!: MatSidenav;
 
   constructor(private router: Router) {}
 
   get isLoggedIn(): boolean {
     return !!localStorage.getItem('userId');
   }
+  
+  get isAdmin(): boolean {
+    return localStorage.getItem('isAdmin') === 'true';
+  }
 
   toggleSidenav() {
     this.sidenav.toggle();
+  }
+  
+  toggleAdminSidenav() {
+    this.adminSidenav.toggle();
   }
 
   logout() {
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
+    localStorage.removeItem('isAdmin');
     this.router.navigate(['/']);
   }
 }

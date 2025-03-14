@@ -1,0 +1,431 @@
+/* Main container */
+.showtime-container {
+  padding: 24px;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
+}
+
+/* Header section */
+.header-section {
+  margin-bottom: 24px;
+}
+
+.header-section h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+}
+
+.header-section p {
+  margin: 8px 0 0;
+  color: #666;
+}
+
+/* Loading container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.loading-container p {
+  margin-top: 16px;
+  color: #666;
+}
+
+/* Content area */
+.content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Section title */
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.search-field {
+  width: 300px;
+}
+
+/* Movie selection */
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.movie-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.movie-card.selected {
+  border: 2px solid #3f51b5;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.poster-container {
+  position: relative;
+  height: 0;
+  padding-top: 150%; /* 2:3 aspect ratio for movie posters */
+  overflow: hidden;
+}
+
+.poster-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.movie-info {
+  padding: 12px;
+}
+
+.movie-info h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-details {
+  color: #666;
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+/* Showtime management section */
+.showtime-management {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.selected-movie-info {
+  margin-bottom: 24px;
+}
+
+.movie-header {
+  display: flex;
+  gap: 24px;
+}
+
+.movie-thumbnail {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.movie-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.movie-header p {
+  margin: 4px 0;
+  color: #666;
+}
+
+.movie-header button {
+  margin-top: 16px;
+}
+
+/* Showtimes list */
+.showtime-list-container {
+  margin-top: 24px;
+}
+
+.showtime-list-container h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Empty showtime state */
+.empty-showtime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.empty-showtime mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  color: #bdbdbd;
+  margin-bottom: 16px;
+}
+
+.empty-showtime p {
+  color: #757575;
+  margin-bottom: 16px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mat-column-cinema {
+  width: 20%;
+}
+
+.cinema-city {
+  font-size: 12px;
+  color: #666;
+}
+
+.mat-column-room {
+  width: 15%;
+}
+
+.room-badge {
+  display: inline-block;
+  background-color: #e8eaf6;
+  color: #3f51b5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.room-type {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.mat-column-date {
+  width: 15%;
+}
+
+.mat-column-time {
+  width: 15%;
+}
+
+.mat-column-price {
+  width: 20%;
+}
+
+.price-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.discount-price {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.mat-column-actions {
+  width: 15%;
+  text-align: right;
+}
+
+/* Dialog styles */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slide-up 0.2s ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  background-color: #f5f5f5;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.dialog-content {
+  padding: 24px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid #eee;
+  gap: 8px;
+}
+
+/* Form styles */
+.full-width {
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.price-section {
+  margin-top: 24px;
+}
+
+.price-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Delete dialog */
+.delete-dialog {
+  max-width: 450px;
+}
+
+.delete-warning {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: #f44336;
+  font-weight: 500;
+}
+
+.delete-warning mat-icon {
+  color: #f44336;
+  font-size: 24px;
+}
+
+.delete-info {
+  background-color: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.delete-info p {
+  margin: 8px 0;
+}
+
+.delete-notice {
+  color: #666;
+  font-style: italic;
+  margin: 8px 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .movie-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .movie-thumbnail {
+    margin-bottom: 16px;
+  }
+  
+  .search-field {
+    width: 100%;
+  }
+  
+  .section-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+}

@@ -1,13 +1,15 @@
-<mat-toolbar color="primary" class="mat-elevation-z6">
+<!-- User Interface (display only if logged in and not admin) -->
+<ng-container *ngIf="!isAdmin">
+  <mat-toolbar color="primary" class="mat-elevation-z6">
     <div class="container">
       <div class="row w-100 align-items-center">
         <div class="col-md-3 d-flex align-items-center">
-          <button mat-icon-button class="d-block d-md-none " (click)="sidenav.toggle()">
+          <button mat-icon-button class="d-block d-md-none" (click)="sidenav.toggle()">
             <mat-icon>menu</mat-icon>
           </button>
           <a routerLink="/" class="navbar-brand d-flex align-items-center text-black text-decoration-none">
             <mat-icon class="me-2">movie</mat-icon>
-            <span class="fw-bold fs-4" >CinemaTicket</span>
+            <span class="fw-bold fs-4">CinemaTicket</span>
           </a>
         </div>
         
@@ -63,12 +65,11 @@
             </ng-container>
           </div>
         </div>
-        
       </div>
     </div>
   </mat-toolbar>
   
-  <!-- Mobile sidenav -->
+  <!-- Mobile sidenav for regular users -->
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="over" class="p-3">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -114,8 +115,88 @@
       </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <router-outlet></router-outlet>
+      <router-outlet *ngIf="!isAdmin"></router-outlet>
     </mat-sidenav-content>
- 
   </mat-sidenav-container>
+</ng-container>
 
+<!-- Admin Interface (display only if logged in and is admin) -->
+<ng-container *ngIf="isAdmin">
+  <mat-toolbar color="primary" class="mat-elevation-z6">
+    <div class="container">
+      <div class="row w-100 align-items-center">
+        <div class="col-md-3 d-flex align-items-center">
+          <button mat-icon-button (click)="toggleAdminSidenav()">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <a class="navbar-brand d-flex align-items-center text-white text-decoration-none">
+            <mat-icon class="me-2">admin_panel_settings</mat-icon>
+            <span class="fw-bold fs-4">Admin Panel</span>
+          </a>
+        </div>
+        
+        <div class="col-md-6"></div>
+        
+        <div class="col-md-3">
+          <div class="d-flex justify-content-end align-items-center">
+            <button mat-icon-button matTooltip="Logout" (click)="logout()">
+              <mat-icon>exit_to_app</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- Admin sidenav  -->
+  <mat-sidenav-container class="admin-sidenav-container">
+    <mat-sidenav #adminSidenav mode="side" opened class="admin-sidenav">
+      <div class="admin-sidenav-content">
+        <div class="admin-user-info text-center p-3">
+          <mat-icon class="admin-avatar">account_circle</mat-icon>
+          <h4 class="mt-2 mb-0 text-dark" >Admin Panel</h4>
+          
+        </div>
+        <mat-divider></mat-divider>
+        <div class="admin-menu">
+          <a mat-button class="admin-menu-item" routerLink="/admin/dashboard" routerLinkActive="active">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </a>
+          <a mat-button class="admin-menu-item" routerLink="/admin/listcinema" routerLinkActive="active">
+            <mat-icon>movie_filter</mat-icon>
+            <span>Quản lý rạp</span>
+          </a>
+          <a mat-button class="admin-menu-item" routerLink="/admin/listmovie" routerLinkActive="active">
+            <mat-icon>movie</mat-icon>
+            <span>Quản lý phim</span>
+          </a>
+          <a mat-button class="admin-menu-item" routerLink="/admin/showtime" routerLinkActive="active">
+            <mat-icon>schedule</mat-icon>
+            <span>Lịch chiếu</span>
+          </a>
+          <a mat-button class="admin-menu-item" routerLink="/admin/room" routerLinkActive="active">
+            <mat-icon>door</mat-icon>
+            <span>Phòng chiếu</span>
+          </a>
+          <a mat-button class="admin-menu-item" routerLink="/admin/promotions" routerLinkActive="active">
+            <mat-icon>card_giftcard</mat-icon>
+            <span>Khuyến mãi</span>
+          </a>
+          <a mat-button class="admin-menu-item" routerLink="/admin/statistics" routerLinkActive="active">
+            <mat-icon>bar_chart</mat-icon>
+            <span>Thống kê</span>
+          </a>
+          <mat-divider></mat-divider>
+          <a mat-button class="admin-menu-item" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Đăng xuất</span>
+          </a>
+        </div>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content class="admin-content">
+      <router-outlet *ngIf="isAdmin"></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>

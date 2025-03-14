@@ -1,0 +1,172 @@
+<div class="room-management-container">
+    <div class="room-management-header">
+      <h1>Room Management</h1>
+      <div class="search-filter">
+        <mat-form-field appearance="outline">
+          <mat-label>Search Cinemas</mat-label>
+          <input matInput [(ngModel)]="searchQuery" (input)="filterCinemas()" placeholder="Cinema name, city...">
+          <button *ngIf="searchQuery" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-icon matSuffix *ngIf="!searchQuery">search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading cinemas and rooms...</p>
+    </div>
+  
+    <!-- Empty state -->
+    <mat-card *ngIf="!isLoading && filteredCinemas.length === 0" class="empty-state">
+      <mat-card-content>
+        <mat-icon class="empty-icon">meeting_room</mat-icon>
+        <h2>No Cinemas Found</h2>
+        <p *ngIf="searchQuery">Try adjusting your search criteria</p>
+        <p *ngIf="!searchQuery">No cinemas are currently available in the system</p>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Cinema and Room List -->
+    <div *ngIf="!isLoading && filteredCinemas.length > 0" class="cinema-rooms-list">
+      <mat-accordion multi="true">
+        <mat-expansion-panel *ngFor="let cinema of filteredCinemas">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div class="cinema-title">
+                <mat-icon>movie</mat-icon>
+                <span>{{cinema.name}}</span>
+              </div>
+            </mat-panel-title>
+            <mat-panel-description>
+              <span class="cinema-location">{{cinema.city}}</span>
+              <span class="room-count">{{cinema.rooms?.length || 0}} rooms</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+  
+          <div class="cinema-details">
+            <p><strong>Address:</strong> {{cinema.address}}</p>
+            <p><strong>Phone:</strong> {{cinema.phoneNumber}}</p>
+  
+            <!-- Room List -->
+            <div class="room-list-header">
+              <h3>Rooms</h3>
+              <button mat-raised-button color="primary" (click)="openAddRoomDialog(cinema)">
+                <mat-icon>add</mat-icon> Add Room
+              </button>
+            </div>
+  
+            <!-- Empty rooms state -->
+            <div *ngIf="!cinema.rooms || cinema.rooms.length === 0" class="empty-rooms">
+              <mat-icon>chair</mat-icon>
+              <p>No rooms available for this cinema</p>
+              <button mat-stroked-button color="primary" (click)="openAddRoomDialog(cinema)">
+                Add Your First Room
+              </button>
+            </div>
+  
+            <!-- Room cards -->
+            <div *ngIf="cinema.rooms && cinema.rooms.length > 0" class="room-grid">
+              <mat-card *ngFor="let room of cinema.rooms" class="room-card">
+                <mat-card-header>
+                  <div [class]="'room-type-indicator ' + room.roomType.toLowerCase()"></div>
+                  <mat-card-title>{{room.roomName}}</mat-card-title>
+                  <mat-card-subtitle>{{room.roomType}}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="room-capacity">
+                    <mat-icon>event_seat</mat-icon>
+                    <span>{{room.capacity}} seats</span>
+                  </div>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-button color="primary" (click)="openEditRoomDialog(cinema, room)">
+                    <mat-icon>edit</mat-icon> Edit
+                  </button>
+                  <button mat-button color="warn" (click)="openDeleteRoomDialog(cinema, room)">
+                    <mat-icon>delete</mat-icon> Delete
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+  
+  <!-- Add/Edit Room Dialog -->
+  <div *ngIf="isRoomDialogOpen" class="room-dialog-overlay" (click)="closeRoomDialog()">
+    <div class="room-dialog-content" (click)="$event.stopPropagation()">
+      <div class="room-dialog-header">
+        <h2>{{editingRoom ? 'Edit Room' : 'Add New Room'}}</h2>
+        <button mat-icon-button (click)="closeRoomDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+  
+      <div class="room-dialog-body">
+        <form #roomForm="ngForm" (ngSubmit)="saveRoom()">
+          <mat-form-field appearance="outline">
+            <mat-label>Room Name</mat-label>
+            <input matInput [(ngModel)]="currentRoom.roomName" name="roomName" required>
+            <mat-error>Room name is required</mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Room Type</mat-label>
+            <mat-select [(ngModel)]="currentRoom.roomType" name="roomType" required>
+              <mat-option value="STANDARD">Standard</mat-option>
+              <mat-option value="IMAX">IMAX</mat-option>
+              <mat-option value="4DX">4DX</mat-option>
+              <mat-option value="3D">3D</mat-option>
+              <mat-option value="2D">2D</mat-option>
+              <mat-option value="VIP">VIP</mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Capacity</mat-label>
+            <input matInput type="number" [(ngModel)]="currentRoom.capacity" name="capacity" min="1" required>
+            <mat-error>Capacity must be a valid number</mat-error>
+          </mat-form-field>
+  
+          <div class="room-form-actions">
+            <button mat-button type="button" (click)="closeRoomDialog()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!roomForm.valid">
+              {{editingRoom ? 'Update Room' : 'Add Room'}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Room Confirmation Dialog -->
+  <div *ngIf="isDeleteDialogOpen" class="room-dialog-overlay" (click)="cancelDeleteRoom()">
+    <div class="room-dialog-content delete-dialog" (click)="$event.stopPropagation()">
+      <div class="room-dialog-header">
+        <h2>Delete Room</h2>
+        <button mat-icon-button (click)="cancelDeleteRoom()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+  
+      <div class="room-dialog-body">
+        <p class="delete-warning">
+          <mat-icon>warning</mat-icon>
+          Are you sure you want to delete room "{{roomToDelete?.roomName}}"?
+        </p>
+        <p class="delete-note">This action cannot be undone. All associated showtime data may also be deleted.</p>
+  
+        <div class="room-form-actions">
+          <button mat-button (click)="cancelDeleteRoom()">Cancel</button>
+          <button mat-raised-button color="warn" (click)="confirmDeleteRoom()">
+            Delete Room
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -294,8 +294,8 @@ export class MovieInfoComponent implements OnInit {
     this.http.get<AvailableSeat[]>(apiUrl).subscribe({
       next: (seats) => {
         // Filter only available seats
-        this.availableSeats = seats.filter(seat => seat.seatStatus === "Available");
-        
+       // this.availableSeats = seats.filter(seat => seat.seatStatus === "Available");
+        this.availableSeats = seats;
         // Get room info from first seat (all seats will be in same room)
         if (seats.length > 0) {
           this.roomInfo = {

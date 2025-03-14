@@ -197,7 +197,7 @@
                   [class.standard]="seat.seatType === 'Standard'"
                   [class.selected]="isSeatSelected(seat)"
                   [class.booked]="!isSeatAvailable(seat)"
-                  [class.cancelled]="seat.bookingStatus === 'Cancelled'"
+                 
                   [matTooltip]="getSeatTooltip(seat)"
                   (click)="toggleSeatSelection(seat)">
                   {{seat.seatNumber}}
@@ -220,6 +220,9 @@
             <div class="seat-sample selected"></div>
             <span>Ghế đã chọn</span>
           </div>
+          <div class="legend-item">
+            <div class="seat-sample booked"></div>
+            <span>Ghế đã đặt</span>
         </div>
         
         <!-- Selection summary -->

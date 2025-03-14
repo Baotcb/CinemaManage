@@ -1,0 +1,266 @@
+<div class="showtime-container">
+    <div class="header-section">
+      <h1>Showtime Management</h1>
+      <p>Select a movie to manage its showtimes</p>
+    </div>
+    
+    <!-- Loading indicator -->
+    <div class="loading-container" *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading data...</p>
+    </div>
+    
+    <!-- Main content area -->
+    <div class="content-area" *ngIf="!isLoading">
+      <!-- Movie selection section -->
+      <div class="movie-selection">
+        <div class="section-title">
+          <h2>Available Movies</h2>
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search Movies</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (input)="filterMovies()" placeholder="Search by title, genre...">
+            <button *ngIf="searchTerm" mat-icon-button matSuffix (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-icon *ngIf="!searchTerm" matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+        
+        <div class="movie-grid">
+          <div class="movie-card" *ngFor="let movie of filteredMovies" 
+               [class.selected]="selectedMovie?.movieId === movie.movieId"
+               (click)="selectMovie(movie)">
+            <div class="poster-container">
+              <img [src]="movie.posterUrl || 'assets/images/no-poster.jpg'" [alt]="movie.title">
+              <div class="movie-badge" *ngIf="movie.ageRestriction">{{movie.ageRestriction}}</div>
+            </div>
+            <div class="movie-info">
+              <h3>{{movie.title}}</h3>
+              <p class="movie-details">{{formatDuration(movie.duration)}} • {{movie.genre}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Showtime management section - visible only when a movie is selected -->
+      <div class="showtime-management" *ngIf="selectedMovie">
+        <div class="selected-movie-info">
+          <div class="movie-header">
+            <img [src]="selectedMovie.posterUrl || 'assets/images/no-poster.jpg'" [alt]="selectedMovie.title" class="movie-thumbnail">
+            <div>
+              <h2>{{selectedMovie.title}}</h2>
+              <p><strong>Duration:</strong> {{formatDuration(selectedMovie.duration)}}</p>
+              <p><strong>Genre:</strong> {{selectedMovie.genre}}</p>
+              <p *ngIf="selectedMovie.director"><strong>Director:</strong> {{selectedMovie.director}}</p>
+              <button mat-raised-button color="primary" (click)="openAddShowtimeDialog()">
+                <mat-icon>add</mat-icon> Add New Showtime
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="showtime-list-container">
+          <h3>Showtimes</h3>
+          
+          <!-- Empty state when no showtimes are available -->
+          <div class="empty-showtime" *ngIf="getShowtimesForMovie(selectedMovie.movieId).length === 0">
+            <mat-icon>event_busy</mat-icon>
+            <p>No showtimes scheduled for this movie</p>
+            <button mat-stroked-button color="primary" (click)="openAddShowtimeDialog()">
+              Schedule First Showtime
+            </button>
+          </div>
+          
+          <!-- Showtime list/table -->
+          <table mat-table [dataSource]="getShowtimesForMovie(selectedMovie.movieId)" *ngIf="getShowtimesForMovie(selectedMovie.movieId).length > 0">
+            <!-- Cinema Column -->
+            <ng-container matColumnDef="cinema">
+              <th mat-header-cell *matHeaderCellDef>Cinema</th>
+              <td mat-cell *matCellDef="let showtime">
+                {{getCinemaName(showtime.roomId)}}
+                <div class="cinema-city">{{getCinemaCity(showtime.roomId)}}</div>
+              </td>
+            </ng-container>
+            
+            <!-- Room Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef>Room</th>
+              <td mat-cell *matCellDef="let showtime">
+                <div class="room-badge">
+                  {{getRoomName(showtime.roomId)}}
+                </div>
+                <div class="room-type">{{getRoomType(showtime.roomId)}}</div>
+              </td>
+            </ng-container>
+            
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let showtime">
+                {{formatDate(showtime.startTime)}}
+              </td>
+            </ng-container>
+            
+            <!-- Time Column -->
+            <ng-container matColumnDef="time">
+              <th mat-header-cell *matHeaderCellDef>Time</th>
+              <td mat-cell *matCellDef="let showtime">
+                {{formatTime(showtime.startTime)}} - {{formatTime(showtime.endTime)}}
+              </td>
+            </ng-container>
+            
+            <!-- Price Column -->
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef>Price (VND)</th>
+              <td mat-cell *matCellDef="let showtime">
+                <div class="price-display">
+                  <div>{{formatCurrency(showtime.basePrice)}}</div>
+                  <div class="discount-price" *ngIf="showtime.studentPrice">
+                    Student: {{formatCurrency(showtime.studentPrice)}}
+                  </div>
+                  <div class="discount-price" *ngIf="showtime.childPrice">
+                    Child: {{formatCurrency(showtime.childPrice)}}
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let showtime">
+                <button mat-icon-button color="primary" (click)="openEditShowtimeDialog(showtime)" [disabled]="isPastShowtime(showtime)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="openDeleteShowtimeDialog(showtime)" [disabled]="isPastShowtime(showtime)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add/Edit Showtime Dialog -->
+  <div class="dialog-overlay" *ngIf="isShowtimeDialogOpen" (click)="closeShowtimeDialog()">
+    <div class="dialog-container" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>{{editMode ? 'Edit Showtime' : 'Add New Showtime'}}</h2>
+        <button mat-icon-button (click)="closeShowtimeDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="dialog-content">
+        <form #showtimeForm="ngForm" (ngSubmit)="saveShowtime()">
+          <!-- Room Selection -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Room</mat-label>
+            <mat-select [(ngModel)]="currentShowtime.roomId" name="roomId" required>
+              <mat-optgroup *ngFor="let cinema of cinemas" [label]="cinema.name">
+                <mat-option *ngFor="let room of cinema.rooms" [value]="room.roomId">
+                  {{room.roomName}} ({{room.roomType}}) - {{room.capacity}} seats
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+          
+          <!-- Date Selection -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" name="date" required>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Start Time</mat-label>
+              <input matInput type="time" [(ngModel)]="startTime" name="startTime" required (change)="calculateEndTime()">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>End Time</mat-label>
+              <input matInput type="time" [(ngModel)]="endTime" name="endTime" required readonly>
+              <mat-hint>Auto-calculated based on movie duration</mat-hint>
+            </mat-form-field>
+          </div>
+          
+          <!-- Prices -->
+          <div class="price-section">
+            <h3>Ticket Prices</h3>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>Base Price (VND)</mat-label>
+                <input matInput type="number" [(ngModel)]="currentShowtime.basePrice" name="basePrice" required min="0" (change)="updateDiscountPrices()">
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>Student Price (VND)</mat-label>
+                <input matInput type="number" [(ngModel)]="currentShowtime.studentPrice" name="studentPrice" min="0">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>Child Price (VND)</mat-label>
+                <input matInput type="number" [(ngModel)]="currentShowtime.childPrice" name="childPrice" min="0">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="flex-1">
+                <mat-label>Senior Price (VND)</mat-label>
+                <input matInput type="number" [(ngModel)]="currentShowtime.seniorPrice" name="seniorPrice" min="0">
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="dialog-footer">
+        <button mat-button (click)="closeShowtimeDialog()">Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="!showtimeForm.valid" (click)="saveShowtime()">
+          {{editMode ? 'Update' : 'Add'}} Showtime
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Confirmation Dialog -->
+  <div class="dialog-overlay" *ngIf="isDeleteDialogOpen" (click)="closeDeleteDialog()">
+    <div class="dialog-container delete-dialog" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>Delete Showtime</h2>
+        <button mat-icon-button (click)="closeDeleteDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="dialog-content">
+        <div class="delete-warning">
+          <mat-icon>warning</mat-icon>
+          <span>Are you sure you want to delete this showtime?</span>
+        </div>
+        
+        <div class="delete-info" *ngIf="showtimeToDelete">
+          <p><strong>Movie:</strong> {{selectedMovie?.title}}</p>
+          <p><strong>Cinema:</strong> {{getCinemaName(showtimeToDelete.roomId)}}</p>
+          <p><strong>Room:</strong> {{getRoomName(showtimeToDelete.roomId)}}</p>
+          <p><strong>Date:</strong> {{formatDate(showtimeToDelete.startTime)}}</p>
+          <p><strong>Time:</strong> {{formatTime(showtimeToDelete.startTime)}} - {{formatTime(showtimeToDelete.endTime)}}</p>
+        </div>
+        
+        <p class="delete-notice">This action cannot be undone. Any tickets sold for this showtime may be affected.</p>
+      </div>
+      
+      <div class="dialog-footer">
+        <button mat-button (click)="closeDeleteDialog()">Cancel</button>
+        <button mat-raised-button color="warn" (click)="deleteShowtime()">Delete</button>
+      </div>
+    </div>
+  </div>
