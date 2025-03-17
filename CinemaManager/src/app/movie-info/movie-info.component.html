@@ -142,7 +142,7 @@
   </div>
 
 
-<!-- Seat Selection Modal -->
+
 <div class="seat-selection-modal" [class.show]="showSeatSelection">
   <div class="seat-selection-container">
     <div class="seat-selection-header">
@@ -167,7 +167,7 @@
       </div>
       
       <div *ngIf="!isLoadingSeats && availableSeats.length > 0" class="seat-layout-section">
-        <!-- Price Type Selection -->
+
         <div class="price-type-selection">
           <h4>Loại vé:</h4>
           <mat-button-toggle-group [value]="selectedPriceType" (change)="changePriceType($event.value)">
@@ -178,19 +178,19 @@
           </mat-button-toggle-group>
         </div>
         
-        <!-- Screen indicator -->
+
         <div class="screen-container">
           <div class="screen">
             <span>Màn hình</span>
           </div>
         </div>
         
-        <!-- Seat map -->
+   
         <div class="seat-map">
           <div class="seat-row" *ngFor="let row of getUniqueRows()">
             <div class="row-label">{{row}}</div>
             <div class="seats">
-              <!-- In your seat-selection template -->
+   
               <div *ngFor="let seat of getSeatsInRow(row)" 
               class="seat"
                   [class.vip]="seat.seatType === 'VIP'"
@@ -206,7 +206,7 @@
           </div>
         </div>
         
-        <!-- Seat legend -->
+    
         <div class="seat-legend">
           <div class="legend-item">
             <div class="seat-sample standard"></div>
@@ -225,7 +225,7 @@
             <span>Ghế đã đặt</span>
         </div>
         
-        <!-- Selection summary -->
+ 
         <div *ngIf="selectedSeats.length > 0" class="selection-summary">
           <div class="summary-info">
             <div class="summary-row">
@@ -273,7 +273,7 @@
   </div>
 </div>
 
-<!-- Modal backdrop -->
+
 <div class="modal-backdrop" 
      [class.show]="showSeatSelection"
      (click)="closeSeatSelection()"></div>

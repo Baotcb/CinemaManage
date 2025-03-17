@@ -1,5 +1,4 @@
-/* home.component.css */
-/* Hero Section */
+
 .hero-section {
     height: 600px;
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
@@ -29,7 +28,7 @@
     margin-bottom: 2rem;
   }
   
-  /* Movie Sections */
+
   .movie-section {
     padding: 4rem 0;
     background-color: #f8f9fa;
@@ -53,7 +52,7 @@
     color: #333;
   }
   
-  /* Movie Cards */
+
   .movie-card {
     height: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -109,7 +108,7 @@
     margin-bottom: 0.5rem;
   }
   
-  /* Promo Section */
+
   .promo-section {
     padding: 4rem 0;
     background-color: white;
@@ -141,7 +140,7 @@
     color: #333;
   }
   
-  /* Footer */
+
   .footer {
     background-color: #343a40;
     color: white;
@@ -172,7 +171,7 @@
     margin-right: 5px;
   }
   
-  /* Responsive Adjustments */
+
   @media (max-width: 992px) {
     .movie-card img {
       height: 350px;

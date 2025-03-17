@@ -144,7 +144,7 @@ export class BookingComponent implements OnInit {
     const now = new Date().getTime();
     
     switch (tabIndex) {
-      case 1: // Upcoming
+      case 1: 
         this.filteredBookings = this.bookings.filter(booking => 
           booking.bookingDetails.some(detail => 
             new Date(detail.showtimeInfo.startTime).getTime() > now
@@ -152,7 +152,7 @@ export class BookingComponent implements OnInit {
         );
         break;
       
-      case 2: // Past
+      case 2: 
         this.filteredBookings = this.bookings.filter(booking => 
           booking.bookingDetails.every(detail => 
             new Date(detail.showtimeInfo.startTime).getTime() <= now
@@ -160,7 +160,7 @@ export class BookingComponent implements OnInit {
         );
         break;
       
-      default: // All
+      default: 
         this.filteredBookings = [...this.bookings];
         break;
     }
@@ -233,7 +233,7 @@ export class BookingComponent implements OnInit {
     
     return counts;
   }
-  // Add these methods to the BookingComponent class
+
 
 canCancelBooking(booking: Booking): boolean {
   // Allow cancellation only for bookings that are:
@@ -244,7 +244,7 @@ canCancelBooking(booking: Booking): boolean {
     return false;
   }
   
-  // Check if all showtimes are in the future and at least 24 hours away
+
   const now = new Date();
   const twentyFourHoursFromNow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   
@@ -255,7 +255,7 @@ canCancelBooking(booking: Booking): boolean {
 }
 
 confirmCancelBooking(bookingId: number): void {
-  // Show confirmation dialog
+
   const confirmCancel = window.confirm('Bạn có chắc chắn muốn hủy đặt vé này? Tiền hoàn trả sẽ tuân theo chính sách của rạp chiếu phim.');
   
   if (confirmCancel) {
@@ -273,14 +273,14 @@ cancelBooking(bookingId: number): void {
   
   this.isLoading = true;
   
-  // Updated URL to include both userId and bookingId parameters
+  
   this.http.post(`https://localhost:7057/api/Booking/Cancel/${this.userId}/${bookingId}`, {})
     .subscribe({
       next: (response: any) => {
         this.snackBar.open(response.message || 'Đã hủy đặt vé thành công', 'Đóng', {
           duration: 3000
         });
-        // Reload booking list to reflect the cancellation
+     
         this.loadBookings();
       },
       error: (error) => {

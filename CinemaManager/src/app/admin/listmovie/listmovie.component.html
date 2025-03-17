@@ -172,3 +172,309 @@
     
   
   </div>
+
+  <!-- Add modal dialog overlay  -->
+  <div class="modal-overlay" *ngIf="isAddMovieModalOpen" (click)="closeAddMovieModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add New Movie</h2>
+        <button mat-icon-button (click)="closeAddMovieModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="modal-content">
+        <form #movieForm="ngForm" (ngSubmit)="saveMovie()">
+          <div class="form-columns">
+      
+            <div class="form-column">
+              <h3>Basic Information</h3>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Title</mat-label>
+                <input matInput [(ngModel)]="newMovie.title" name="title" required #title="ngModel">
+                <mat-error *ngIf="title.invalid && title.touched">Title is required</mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Duration (minutes)</mat-label>
+                <input matInput type="number" [(ngModel)]="newMovie.duration" name="duration" required min="1" #duration="ngModel">
+                <mat-error *ngIf="duration.invalid && duration.touched">
+                  Valid duration is required
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Genre</mat-label>
+                <input matInput [(ngModel)]="newMovie.genre" name="genre" placeholder="Action, Drama, Comedy...">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Language</mat-label>
+                <input matInput [(ngModel)]="newMovie.language" name="language">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Subtitle</mat-label>
+                <input matInput [(ngModel)]="newMovie.subtitle" name="subtitle">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Age Restriction</mat-label>
+                <mat-select [(ngModel)]="newMovie.ageRestriction" name="ageRestriction">
+                  <mat-option value="">None</mat-option>
+                  <mat-option value="G">G (General Audiences)</mat-option>
+                  <mat-option value="PG">PG (Parental Guidance)</mat-option>
+                  <mat-option value="PG-13">PG-13 (Parents Strongly Cautioned)</mat-option>
+                  <mat-option value="R">R (Restricted)</mat-option>
+                  <mat-option value="NC-17">NC-17 (Adults Only)</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+       
+            <div class="form-column">
+              <h3>Dates & Description</h3>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Release Date</mat-label>
+                <input matInput [matDatepicker]="releasePicker" [(ngModel)]="newMovie.releaseDate" name="releaseDate">
+                <mat-datepicker-toggle matSuffix [for]="releasePicker"></mat-datepicker-toggle>
+                <mat-datepicker #releasePicker></mat-datepicker>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>End Date</mat-label>
+                <input matInput [matDatepicker]="endPicker" [(ngModel)]="newMovie.endDate" name="endDate">
+                <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                <mat-datepicker #endPicker></mat-datepicker>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Director</mat-label>
+                <input matInput [(ngModel)]="newMovie.director" name="director">
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Cast</mat-label>
+                <textarea matInput [(ngModel)]="newMovie.cast" name="cast" rows="2"></textarea>
+                <mat-hint>Separate actors with commas</mat-hint>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Rating (0-10)</mat-label>
+                <input matInput type="number" [(ngModel)]="newMovie.rating" name="rating" min="0" max="10" step="0.1">
+              </mat-form-field>
+  
+              <mat-form-field appearance="outline" class="description-field">
+                <mat-label>Description</mat-label>
+                <textarea matInput [(ngModel)]="newMovie.description" name="description" rows="4"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <div class="media-section">
+            <h3>Media</h3>
+            <div class="media-inputs">
+              <mat-form-field appearance="outline">
+                <mat-label>Poster URL</mat-label>
+                <input matInput [(ngModel)]="newMovie.posterUrl" name="posterUrl" placeholder="https://example.com/image.jpg">
+                <mat-hint>Direct link to the movie poster image</mat-hint>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Trailer URL</mat-label>
+                <input matInput [(ngModel)]="newMovie.trailerUrl" name="trailerUrl" placeholder="https://youtube.com/watch?v=...">
+              </mat-form-field>
+            </div>
+            
+           
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button mat-button (click)="closeAddMovieModal()">Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="!movieForm.valid" (click)="saveMovie()">
+          Save Movie
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Delete Confirmation Dialog -->
+<div class="modal-overlay" *ngIf="isDeleteDialogOpen" (click)="closeDeleteDialog()">
+  <div class="modal-container delete-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Delete Movie</h2>
+      <button mat-icon-button (click)="closeDeleteDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-content">
+      <div class="delete-warning">
+        <mat-icon>warning</mat-icon>
+        <span>Are you sure you want to delete this movie?</span>
+      </div>
+      
+      <div class="movie-to-delete" *ngIf="movieToDelete">
+        <div class="movie-delete-info">
+          <img [src]="movieToDelete.posterUrl || 'assets/images/no-poster.jpg'" alt="Movie poster" class="delete-poster">
+          <div class="delete-details">
+            <h3>{{movieToDelete.title}}</h3>
+            <p>{{movieToDelete.duration | minutesToHours}} • {{movieToDelete.genre || 'No genre'}}</p>
+            <p *ngIf="movieToDelete.releaseDate">Released: {{movieToDelete.releaseDate | date:'mediumDate'}}</p>
+          </div>
+        </div>
+        
+        <div class="delete-notice">
+          <p>This action cannot be undone. All related showtimes and bookings will also be affected.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button mat-button (click)="closeDeleteDialog()">Cancel</button>
+      <button mat-raised-button color="warn" (click)="confirmDeleteMovie()">
+        Delete Movie
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Movie Modal  -->
+<div class="modal-overlay" *ngIf="isEditMovieModalOpen" (click)="closeEditMovieModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Edit Movie</h2>
+      <button mat-icon-button (click)="closeEditMovieModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-content" *ngIf="movieToEdit">
+      <form #editMovieForm="ngForm" (ngSubmit)="updateMovie()">
+        <div class="form-columns">
+      ->
+          <div class="form-column">
+            <h3>Basic Information</h3>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Title</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.title" name="title" required #title="ngModel">
+              <mat-error *ngIf="title.invalid && title.touched">Title is required</mat-error>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Duration (minutes)</mat-label>
+              <input matInput type="number" [(ngModel)]="movieToEdit.duration" name="duration" required min="1" #duration="ngModel">
+              <mat-error *ngIf="duration.invalid && duration.touched">
+                Valid duration is required
+              </mat-error>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Genre</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.genre" name="genre" placeholder="Action, Drama, Comedy...">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Language</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.language" name="language">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Subtitle</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.subtitle" name="subtitle">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Age Restriction</mat-label>
+              <mat-select [(ngModel)]="movieToEdit.ageRestriction" name="ageRestriction">
+                <mat-option value="">None</mat-option>
+                <mat-option value="G">G (General Audiences)</mat-option>
+                <mat-option value="PG">PG (Parental Guidance)</mat-option>
+                <mat-option value="PG-13">PG-13 (Parents Strongly Cautioned)</mat-option>
+                <mat-option value="R">R (Restricted)</mat-option>
+                <mat-option value="NC-17">NC-17 (Adults Only)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          
+       
+          <div class="form-column">
+            <h3>Dates & Description</h3>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Release Date</mat-label>
+              <input matInput [matDatepicker]="releasePicker" [(ngModel)]="movieToEdit.releaseDate" name="releaseDate">
+              <mat-datepicker-toggle matSuffix [for]="releasePicker"></mat-datepicker-toggle>
+              <mat-datepicker #releasePicker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>End Date</mat-label>
+              <input matInput [matDatepicker]="endPicker" [(ngModel)]="movieToEdit.endDate" name="endDate">
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Director</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.director" name="director">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Cast</mat-label>
+              <textarea matInput [(ngModel)]="movieToEdit.cast" name="cast" rows="2"></textarea>
+              <mat-hint>Separate actors with commas</mat-hint>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Rating (0-10)</mat-label>
+              <input matInput type="number" [(ngModel)]="movieToEdit.rating" name="rating" min="0" max="10" step="0.1">
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline" class="description-field">
+              <mat-label>Description</mat-label>
+              <textarea matInput [(ngModel)]="movieToEdit.description" name="description" rows="4"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+  
+        <div class="media-section">
+          <h3>Media</h3>
+          <div class="media-inputs">
+            <mat-form-field appearance="outline">
+              <mat-label>Poster URL</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.posterUrl" name="posterUrl" placeholder="https://example.com/image.jpg">
+              <mat-hint>Direct link to the movie poster image</mat-hint>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Trailer URL</mat-label>
+              <input matInput [(ngModel)]="movieToEdit.trailerUrl" name="trailerUrl" placeholder="https://youtube.com/watch?v=...">
+            </mat-form-field>
+          </div>
+          
+          <div class="poster-preview" *ngIf="movieToEdit.posterUrl">
+            <h4>Poster Preview</h4>
+            <img [src]="movieToEdit.posterUrl" alt="Poster preview" 
+                 class="preview-image"
+                 onerror="this.src='assets/images/no-poster.jpg'">
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button mat-button (click)="closeEditMovieModal()">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="!editMovieForm.valid" (click)="updateMovie()">
+        Update Movie
+      </button>
+    </div>
+  </div>
+</div>

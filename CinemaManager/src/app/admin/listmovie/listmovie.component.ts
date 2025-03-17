@@ -14,8 +14,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Pipe, PipeTransform } from '@angular/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
-// Create a pipe for minutes to hours conversion
 @Pipe({
   name: 'minutesToHours',
   standalone: true
@@ -51,8 +54,8 @@ export interface Movie {
   rating?: number;
   showtimes?: string[];
   ageRestriction?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 @Component({
@@ -72,7 +75,9 @@ export interface Movie {
     MatDialogModule,
     FormsModule,
     DatePipe,
-    MinutesToHoursPipe
+    MinutesToHoursPipe,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   animations: [
     trigger('expandCollapse', [
@@ -95,6 +100,14 @@ export class ListmovieComponent implements OnInit {
   filteredMovies: Movie[] = [];
   displayedMovies: Movie[] = [];
   isLoading = true;
+
+  isEditMovieModalOpen = false;
+  movieToEdit: Movie | null = null;
+  editMovieForm: NgForm = new NgForm([], []);
+
+  isDeleteDialogOpen = false;
+  movieToDelete: Movie | null = null;
+
   
 
   searchQuery = '';
@@ -129,6 +142,21 @@ export class ListmovieComponent implements OnInit {
       this.updateDisplayedMovies();
       this.isLoading = false;
     });
+    this.signalRService.onMovieAdded((data) => {
+      console.log('Movie added:', data);
+      this.loadMovies();
+      this.closeAddMovieModal();
+    });
+    this.signalRService.onMovieUpdated((data) => {
+      console.log('Movie updated:', data);
+      this.loadMovies();
+      this.closeAddMovieModal();
+    });
+    this.signalRService.onMovieDeleted((data) => {
+      console.log('Movie deleted:', data);
+      this.loadMovies();
+      this.closeAddMovieModal();
+    });
   }
   
   loadMovies() {
@@ -136,7 +164,7 @@ export class ListmovieComponent implements OnInit {
   }
   
   extractGenres() {
-    // Extract unique genres from movies
+
     const genres = new Set<string>();
     
     this.movies.forEach(movie => {
@@ -150,18 +178,16 @@ export class ListmovieComponent implements OnInit {
   
   applyFilter() {
     this.filteredMovies = this.movies.filter(movie => {
-      // Search query filter
       const searchMatch = !this.searchQuery || 
         movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
         (movie.director && movie.director.toLowerCase().includes(this.searchQuery.toLowerCase())) || 
         (movie.cast && movie.cast.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
         (movie.description && movie.description.toLowerCase().includes(this.searchQuery.toLowerCase()));
       
-      // Genre filter
       const genreMatch = !this.selectedGenre || 
         (movie.genre && movie.genre.toLowerCase().includes(this.selectedGenre.toLowerCase()));
       
-      // Status filter
+
       let statusMatch = true;
       if (this.selectedStatus) {
         const now = new Date();
@@ -182,7 +208,6 @@ export class ListmovieComponent implements OnInit {
       return searchMatch && genreMatch && statusMatch;
     });
     
-    // Reset to first page when filters change
     this.pageIndex = 0;
     this.updateDisplayedMovies();
   }
@@ -236,24 +261,180 @@ export class ListmovieComponent implements OnInit {
     }
   }
   
-  addMovie() {
-    // Implement add movie functionality
-    console.log('Add new movie');
-  }
   
   editMovie(movie: Movie) {
-    // Implement edit movie functionality
-    console.log('Edit movie', movie);
+    // Clone movie để không ảnh hưởng đến phiên bản gốc
+    this.movieToEdit = {...movie};
+    
+    // Chuyển đổi string dates thành Date objects nếu cần
+    if (typeof this.movieToEdit.releaseDate === 'string') {
+      this.movieToEdit.releaseDate = new Date(this.movieToEdit.releaseDate);
+    }
+    
+    if (typeof this.movieToEdit.endDate === 'string') {
+      this.movieToEdit.endDate = new Date(this.movieToEdit.endDate);
+    }
+    
+    this.isEditMovieModalOpen = true;
+  }
+  closeEditMovieModal() {
+    this.isEditMovieModalOpen = false;
+    this.movieToEdit = null;
+  }
+  updateMovie() {
+    if (!this.movieToEdit || !this.movieToEdit.title || this.movieToEdit.duration <= 0) {
+      return;
+    }
+  
+    const movieToUpdate = {...this.movieToEdit};
+    
+    // Format dates to match DateOnly format in C# (YYYY-MM-DD)
+    if (movieToUpdate.releaseDate) {
+      const releaseDateObj = new Date(movieToUpdate.releaseDate);
+      movieToUpdate.releaseDate = new Date(
+        Date.UTC(
+          releaseDateObj.getFullYear(),
+          releaseDateObj.getMonth(),
+          releaseDateObj.getDate()
+        )
+      );
+    }
+    
+    if (movieToUpdate.endDate) {
+      const endDateObj = new Date(movieToUpdate.endDate);
+      movieToUpdate.endDate = new Date(
+        Date.UTC(
+          endDateObj.getFullYear(),
+          endDateObj.getMonth(),
+          endDateObj.getDate()
+        )
+      );
+    }
+    
+    // Đặt updatedAt là thời gian hiện tại
+    movieToUpdate.updatedAt = new Date();
+    
+    console.log('Updating movie:', movieToUpdate);
+    
+    this.signalRService.updateMovie(movieToUpdate)
+      .then(() => {
+        console.log('Movie updated successfully');
+        this.closeEditMovieModal();
+      })
+      .catch(error => {
+        console.error('Error updating movie:', error);
+      });
   }
   
   deleteMovie(movieId: number) {
-    // Implement delete movie functionality with confirmation
-    if (confirm(`Are you sure you want to delete this movie? This cannot be undone.`)) {
-      console.log('Delete movie', movieId);
-    }
+    // Tìm movie với movieId
+    const movie = this.movies.find(m => m.movieId === movieId);
+    if (!movie) return;
+    
+    this.movieToDelete = movie;
+    this.isDeleteDialogOpen = true;
+  }
+
+  closeDeleteDialog() {
+    this.isDeleteDialogOpen = false;
+    this.movieToDelete = null;
+  }
+
+  confirmDeleteMovie() {
+    if (!this.movieToDelete) return;
+    
+    console.log('Deleting movie:', this.movieToDelete.movieId);
+    
+    this.signalRService.deleteMovie(this.movieToDelete.movieId)
+      .then(() => {
+        console.log('Movie deleted successfully');
+        this.closeDeleteDialog();
+      })
+      .catch(error => {
+        console.error('Error deleting movie:', error);
+      });
   }
   
   openTrailer(trailerUrl: string) {
     window.open(trailerUrl, '_blank');
   }
+
+
+
+isAddMovieModalOpen = false;
+newMovie: Movie = {
+  movieId: 0,
+  title: '',
+  duration: 120,
+  genre: '',
+  releaseDate: new Date(),
+  posterUrl: ''
+};
+
+
+addMovie() {
+  this.newMovie = {
+    movieId: 0,
+    title: '',
+    description: '',
+    duration: 120,
+    releaseDate: new Date(),
+    endDate: new Date(),
+    genre: '',
+    director: '',
+    cast: '',
+    posterUrl: '',
+    trailerUrl: '',
+    language: '',
+    subtitle: '',
+    rating: 0,
+    ageRestriction: '',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+  this.isAddMovieModalOpen = true;
+}
+
+
+closeAddMovieModal() {
+  this.isAddMovieModalOpen = false;
+}
+
+saveMovie() {
+  if (!this.newMovie.title || this.newMovie.duration <= 0) {
+    return;
+  }
+
+  const movieToSave = {...this.newMovie};
+  
+
+  if (movieToSave.releaseDate) {
+    const releaseDateObj = new Date(movieToSave.releaseDate);
+    movieToSave.releaseDate = new Date(
+      Date.UTC(
+        releaseDateObj.getFullYear(),
+        releaseDateObj.getMonth(),
+        releaseDateObj.getDate()
+      )
+    );
+  }
+  
+  if (movieToSave.endDate) {
+    const endDateObj = new Date(movieToSave.endDate);
+    movieToSave.endDate = new Date(
+      Date.UTC(
+        endDateObj.getFullYear(),
+        endDateObj.getMonth(),
+        endDateObj.getDate()
+      )
+    );
+  }
+  
+  console.log('Saving movie:', movieToSave);
+  
+  this.signalRService.addMovie(movieToSave)
+    .catch(error => {
+      console.error('Error adding movie:', error);
+    });
+}
 }

@@ -1,4 +1,4 @@
-/* showing-movie.component.css */
+
 .showing-movies-container {
     min-height: 100vh;
     background-color: #f8f9fa;
@@ -129,8 +129,6 @@
   .book-btn {
     flex: 2;
   }
-  
-  /* Fix for mat-form-field width */
   .w-100 {
     width: 100%;
   }

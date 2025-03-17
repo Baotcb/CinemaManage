@@ -149,7 +149,7 @@
     }
   }
 
-  /* Add these to the existing CSS */
+
 .step-number {
   display: inline-block;
   width: 24px;
@@ -188,7 +188,7 @@
 }
 
 
-/* Seat Selection Modal */
+
 .seat-selection-modal {
   position: fixed;
   top: 0;
@@ -259,7 +259,7 @@
   display: block;
 }
 
-/* Movie info in seat selection */
+
 .movie-info-compact {
   display: flex;
   gap: 1rem;
@@ -289,7 +289,7 @@
   color: #666;
 }
 
-/* Price type selection */
+
 .price-type-selection {
   margin-bottom: 1.5rem;
   display: flex;
@@ -301,7 +301,7 @@
   margin: 0;
 }
 
-/* Screen */
+
 .screen-container {
   margin: 1.5rem 0;
   display: flex;
@@ -322,7 +322,7 @@
   font-weight: 500;
 }
 
-/* Seat map */
+
 .seat-map {
   margin: 2rem 0;
   display: flex;
@@ -382,7 +382,7 @@
   border: 1px solid #512da8;
 }
 
-/* Seat legend */
+
 .seat-legend {
   display: flex;
   justify-content: center;
@@ -417,7 +417,7 @@
   border: 1px solid #512da8;
 }
 
-/* Selection summary */
+
 .selection-summary {
   background-color: #f5f5f5;
   border-radius: 8px;
@@ -439,7 +439,7 @@
   padding-top: 0.75rem;
 }
 
-/* No seats available */
+
 .no-seats {
   display: flex;
   flex-direction: column;
@@ -455,7 +455,7 @@
   margin-bottom: 1rem;
 }
 
-/* Responsive styles */
+
 @media (max-width: 768px) {
   .seat-selection-container {
     width: 95%;
@@ -484,7 +484,7 @@
     min-width: max-content;
   }
 }
-/* Add to your movie-info.component.css file */
+
 
 .seat.booked {
   background-color: #f5f5f5;

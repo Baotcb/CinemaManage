@@ -1,11 +1,11 @@
-/* Main container */
+
 .showtime-container {
   padding: 24px;
   background-color: #f5f5f5;
   min-height: calc(100vh - 64px);
 }
 
-/* Header section */
+
 .header-section {
   margin-bottom: 24px;
 }
@@ -22,7 +22,7 @@
   color: #666;
 }
 
-/* Loading container */
+
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -36,14 +36,12 @@
   color: #666;
 }
 
-/* Content area */
 .content-area {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* Section title */
 .section-title {
   display: flex;
   justify-content: space-between;
@@ -61,7 +59,7 @@
   width: 300px;
 }
 
-/* Movie selection */
+
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -92,7 +90,7 @@
 .poster-container {
   position: relative;
   height: 0;
-  padding-top: 150%; /* 2:3 aspect ratio for movie posters */
+  padding-top: 150%;
   overflow: hidden;
 }
 
@@ -136,7 +134,7 @@
   margin: 4px 0 0;
 }
 
-/* Showtime management section */
+
 .showtime-management {
   background-color: white;
   border-radius: 8px;
@@ -176,7 +174,6 @@
   margin-top: 16px;
 }
 
-/* Showtimes list */
 .showtime-list-container {
   margin-top: 24px;
 }
@@ -187,7 +184,7 @@
   font-weight: 500;
 }
 
-/* Empty showtime state */
+
 .empty-showtime {
   display: flex;
   flex-direction: column;
@@ -212,7 +209,7 @@
   margin-bottom: 16px;
 }
 
-/* Table styles */
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -274,7 +271,7 @@ table {
   text-align: right;
 }
 
-/* Dialog styles */
+
 .dialog-overlay {
   position: fixed;
   top: 0;
@@ -337,7 +334,7 @@ table {
   gap: 8px;
 }
 
-/* Form styles */
+
 .full-width {
   width: 100%;
 }
@@ -363,7 +360,7 @@ table {
   color: #555;
 }
 
-/* Delete dialog */
+
 .delete-dialog {
   max-width: 450px;
 }
@@ -399,7 +396,6 @@ table {
   margin: 8px 0 0;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .movie-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

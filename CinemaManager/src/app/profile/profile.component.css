@@ -101,7 +101,7 @@
       font-size: 1.25rem;
     }
   }
-  /* Existing styles remain the same */
+
 
 
   
@@ -133,7 +133,6 @@
     gap: 10px;
   }
 
-  /* Modal styles */
 .modal {
   position: fixed;
   top: 0;

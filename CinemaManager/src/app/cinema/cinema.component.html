@@ -1,5 +1,5 @@
 <div class="cinema-page">
-    <!-- Hero Section -->
+
     <section class="hero-section">
       <div class="container">
         <h1>Hệ Thống Rạp Chiếu Phim</h1>
@@ -7,7 +7,7 @@
       </div>
     </section>
   
-    <!-- Filter Section -->
+
     <section class="filter-section">
       <div class="container">
         <mat-form-field appearance="outline">
@@ -20,8 +20,7 @@
         </mat-form-field>
       </div>
     </section>
-  
-    <!-- Cinemas List -->
+
     <section class="cinemas-section">
       <div class="container">
         <div *ngIf="isLoading" class="loading-spinner">
@@ -29,7 +28,7 @@
         </div>
   
         <div class="row g-4" *ngIf="!isLoading">
-          <!-- Update the cinema card section -->
+ 
           <div class="col-md-6 col-lg-4" *ngFor="let cinema of cinemas">
             <mat-card class="cinema-card h-100">
               <img mat-card-image 

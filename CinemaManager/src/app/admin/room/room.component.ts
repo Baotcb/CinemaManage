@@ -60,7 +60,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   isLoading = true;
   searchQuery = '';
   
-  // Room dialog properties
+
   isRoomDialogOpen = false;
   isDeleteDialogOpen = false;
   editingRoom = false;
@@ -79,6 +79,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   
   ngOnDestroy() {
     if (this.connectionSubscription) {
@@ -94,7 +95,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       console.log('Cinemas:', cinemas);
     });
     
-    // Add event handlers for room operations
+ 
     this.signalRService.onAddRoom( (success: boolean) => {
       if (success) {
         this.snackBar.open('Room added successfully!', 'Close', {

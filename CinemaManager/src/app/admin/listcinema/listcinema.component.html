@@ -17,35 +17,35 @@
         <div class="modal-content">
           <form #cinemaForm="ngForm" (ngSubmit)="submitAddCinema()">
             <div class="form-grid">
-              <!-- Cinema Name -->
+           
               <mat-form-field appearance="outline">
                 <mat-label>Cinema Name</mat-label>
                 <input matInput name="name" [(ngModel)]="newCinema.name" required>
                 <mat-error>Cinema name is required</mat-error>
               </mat-form-field>
 
-              <!-- Address -->
+        
               <mat-form-field appearance="outline">
                 <mat-label>Address</mat-label>
                 <input matInput name="address" [(ngModel)]="newCinema.address" required>
                 <mat-error>Address is required</mat-error>
               </mat-form-field>
 
-              <!-- City -->
+       
               <mat-form-field appearance="outline">
                 <mat-label>City</mat-label>
                 <input matInput name="city" [(ngModel)]="newCinema.city" required>
                 <mat-error>City is required</mat-error>
               </mat-form-field>
 
-              <!-- Phone -->
+         
               <mat-form-field appearance="outline">
                 <mat-label>Phone Number</mat-label>
                 <input matInput name="phone" [(ngModel)]="newCinema.phoneNumber" required>
                 <mat-error>Phone number is required</mat-error>
               </mat-form-field>
 
-              <!-- Email -->
+         
               <mat-form-field appearance="outline">
                 <mat-label>Email</mat-label>
                 <input matInput type="email" name="email" [(ngModel)]="newCinema.email" required email>
@@ -54,7 +54,7 @@
 
 
 
-              <!-- Description -->
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Description</mat-label>
                 <textarea matInput name="description" [(ngModel)]="newCinema.description" rows="3"></textarea>
@@ -78,13 +78,13 @@
     </div>
   
     <div class="cinema-list-content">
-      <!-- Loading spinner -->
+ 
       <div *ngIf="isLoading" class="loading-container">
         <mat-spinner diameter="50"></mat-spinner>
         <p>Loading cinemas...</p>
       </div>
   
-      <!-- Empty state -->
+  
       <mat-card *ngIf="!isLoading && cinemas.length === 0" class="empty-state">
         <mat-card-content>
           <mat-icon class="empty-icon">movie</mat-icon>
@@ -93,16 +93,15 @@
         </mat-card-content>
       </mat-card>
   
-      <!-- Cinema table -->
+
       <div *ngIf="!isLoading && cinemas.length > 0" class="table-container mat-elevation-z2">
         <table mat-table [dataSource]="cinemas" class="cinema-table">
-          <!-- Cinema ID Column -->
+
           <ng-container matColumnDef="cinemaId">
             <th mat-header-cell *matHeaderCellDef>ID</th>
             <td mat-cell *matCellDef="let cinema">{{ cinema.cinemaId }}</td>
           </ng-container>
   
-          <!-- Name Column -->
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let cinema">
@@ -113,25 +112,23 @@
             </td>
           </ng-container>
   
-          <!-- Address Column -->
+     >
           <ng-container matColumnDef="address">
             <th mat-header-cell *matHeaderCellDef>Address</th>
             <td mat-cell *matCellDef="let cinema">{{ cinema.address }}</td>
           </ng-container>
   
-          <!-- City Column -->
+  
           <ng-container matColumnDef="city">
             <th mat-header-cell *matHeaderCellDef>City</th>
             <td mat-cell *matCellDef="let cinema">{{ cinema.city }}</td>
           </ng-container>
-  
-          <!-- Phone Column -->
           <ng-container matColumnDef="phone">
             <th mat-header-cell *matHeaderCellDef>Phone</th>
             <td mat-cell *matCellDef="let cinema">{{ cinema.phoneNumber }}</td>
           </ng-container>
   
-          <!-- Active Status Column -->
+     
           <ng-container matColumnDef="isActive">
             <th mat-header-cell *matHeaderCellDef>Status</th>
             <td mat-cell *matCellDef="let cinema">
@@ -164,7 +161,7 @@
             </td>
           </ng-container>
   
-          <!-- Room details expansion -->
+    
           <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let cinema" [attr.colspan]="displayedColumns.length">
               <div class="cinema-detail" [@detailExpand]="cinema === expandedCinema ? 'expanded' : 'collapsed'">

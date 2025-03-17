@@ -67,6 +67,15 @@ export class SignalRService {
     public onMovieData(callback: (data: any[]) => void) {
       this.hubConnection.on('GetMovies', callback);
     }
+    public onMovieAdded(callback: (data: boolean) => void) {
+      this.hubConnection.on('AddMovie', callback);
+    }
+    public onMovieUpdated(callback: (data: boolean) => void) {
+      this.hubConnection.on('UpdateMovie', callback);
+    }
+    public onMovieDeleted(callback: (data: boolean) => void) {
+      this.hubConnection.on('DeleteMovie', callback);
+    }
 
 
     //room
@@ -110,13 +119,41 @@ export class SignalRService {
     }
     //movie
     public async addMovie(movie: any): Promise<void> {
-        await this.hubConnection.invoke('AddMovie', movie);
+      console.log('Adding movie via SignalR:', movie);
+      const movieToSend = {
+        ...movie,
+        releaseDate: movie.releaseDate ? movie.releaseDate.toISOString().split('T')[0] : null,
+        endDate: movie.endDate ? movie.endDate.toISOString().split('T')[0] : null
+      };
+      
+      return this.hubConnection.invoke('AddMovie', movieToSend)
+        .catch(err => {
+          console.error('Error invoking AddMovie:', err);
+          throw err;
+        });
     }
     public async updateMovie(movie: any): Promise<void> {
-        await this.hubConnection.invoke('UpdateMovie', movie);
+      console.log('Updating movie via SignalR:', movie);
+      const movieToSend = {
+        ...movie,
+        releaseDate: movie.releaseDate ? movie.releaseDate.toISOString().split('T')[0] : null,
+        endDate: movie.endDate ? movie.endDate.toISOString().split('T')[0] : null,
+        updatedAt: new Date().toISOString()
+      };
+      
+      return this.hubConnection.invoke('UpdateMovie', movieToSend)
+        .catch(err => {
+          console.error('Error invoking UpdateMovie:', err);
+          throw err;
+        });
     }
     public async deleteMovie(movieId: number): Promise<void> {
-        await this.hubConnection.invoke('DeleteMovie', movieId);
+      console.log('Deleting movie via SignalR, ID:', movieId);
+      return this.hubConnection.invoke('DeleteMovie', movieId)
+        .catch(err => {
+          console.error('Error invoking DeleteMovie:', err);
+          throw err;
+        });
     }
     //room
     public async addRoom(room: any): Promise<void> {

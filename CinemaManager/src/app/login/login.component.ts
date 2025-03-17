@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
       rememberMe: [false]
     });
     
-    // Add event listener to track mouse movement for spotlight effect
+
     window.addEventListener('DOMContentLoaded', () => {
       const card = document.querySelector('.cinema-card') as HTMLElement;
       const spotlight = document.querySelector('.spotlight') as HTMLElement;

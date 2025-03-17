@@ -86,20 +86,20 @@ export class MovieInfoComponent implements OnInit {
   movie?: Movie;
   isLoading = true;
   
-  // Selection model
+
   selectedCinema?: string;
   selectedDate?: string;
   selectedTime?: string;
   
-  // Available options
+
   availableCinemas: string[] = [];
   availableDates: string[] = [];
   availableTimes: string[] = [];
   
-  // Parsed showtimes for easier processing
+
   parsedShowtimes: ShowtimeInfo[] = [];
 
-  //seat selection
+
   availableSeats: AvailableSeat[] = [];
   selectedSeats: AvailableSeat[] = [];
   isLoadingSeats = false;
@@ -140,28 +140,28 @@ export class MovieInfoComponent implements OnInit {
 
   parseShowtime(showtime: string): ShowtimeInfo {
     try {
-      // Format: "CGV Landmark 81 - 10/03/2025 10:00:00 SA"
+
       const parts = showtime.split(' - ');
       const cinema = parts[0];
       
-      // Extract date and time
+
       const dateTimeParts = parts[1].split(' ');
-      const date = dateTimeParts[0]; // 10/03/2025
+      const date = dateTimeParts[0]; 
       
-      // Get time components
-      let timeString = dateTimeParts[1]; // 10:00:00
+
+      let timeString = dateTimeParts[1]; 
       let period = '';
       
       if (dateTimeParts.length > 2) {
-        period = dateTimeParts[2]; // SA or CH
-        // Store both formats - original and 24-hour
+        period = dateTimeParts[2];
+
         const originalTime = `${timeString} ${period}`;
         const time24 = this.convertTo24HourFormat(originalTime);
         
         return {
           cinema,
           date,
-          time: time24, // Store as 24-hour format
+          time: time24, 
           fullShowtime: showtime
         };
       }
@@ -169,7 +169,7 @@ export class MovieInfoComponent implements OnInit {
       return {
         cinema,
         date,
-        time: timeString, // Already 24-hour format
+        time: timeString, 
         fullShowtime: showtime
       };
     } catch (error) {
@@ -200,7 +200,7 @@ export class MovieInfoComponent implements OnInit {
   extractCinemas() {
     if (!this.parsedShowtimes.length) return;
     
-    // Get unique cinemas
+
     this.availableCinemas = [...new Set(
       this.parsedShowtimes.map(info => info.cinema)
     )];
@@ -268,14 +268,14 @@ export class MovieInfoComponent implements OnInit {
     
     const startTimeFormatted = this.selectedTime;
     
-    // Calculate end time based on movie duration
+ 
     const [hours, minutes, seconds] = startTimeFormatted.split(':').map(Number);
     
-    // Create a Date object for time calculation
+
     const startDate = new Date();
     startDate.setHours(hours, minutes, seconds || 0);
     
-    // Add movie duration in minutes
+
     const endDate = new Date(startDate.getTime() + (this.movie.duration * 60 * 1000));
     
     const endTimeFormatted = `${endDate.getHours().toString().padStart(2, '0')}:${
@@ -286,17 +286,17 @@ export class MovieInfoComponent implements OnInit {
     console.log(`Movie duration: ${this.movie.duration} minutes`);
     console.log(`Movie end time: ${endTimeFormatted}`);
       
-    // Make API call with both start and end times
+  
     const apiUrl = `https://localhost:7057/api/Seat/GetAvailableSeats/${this.movieId}/${
       encodeURIComponent(this.selectedCinema)}/${dateFormatted}/${
       startTimeFormatted}/${endTimeFormatted}`;
     
     this.http.get<AvailableSeat[]>(apiUrl).subscribe({
       next: (seats) => {
-        // Filter only available seats
+       
        // this.availableSeats = seats.filter(seat => seat.seatStatus === "Available");
         this.availableSeats = seats;
-        // Get room info from first seat (all seats will be in same room)
+        
         if (seats.length > 0) {
           this.roomInfo = {
             name: seats[0].roomName,
@@ -321,7 +321,7 @@ export class MovieInfoComponent implements OnInit {
   }
   
   toggleSeatSelection(seat: AvailableSeat): void {
-    // Only allow selection if seat is available
+   
     if (!this.isSeatAvailable(seat)) return;
     
     const index = this.selectedSeats.findIndex(s => s.seatId === seat.seatId);
@@ -332,30 +332,30 @@ export class MovieInfoComponent implements OnInit {
     }
   }
   convertTo24HourFormat(timeStr: string): string {
-    // Check if the time already has AM/PM indicator
+    
     if (timeStr.includes(' ')) {
       const [time, period] = timeStr.split(' ');
       const [hours, minutes, seconds] = time.split(':').map(Number);
       
-      // Convert to 24-hour format
+
       let hour24 = hours;
       
-      // Handle PM (CH) cases - add 12 to hours unless it's 12 PM
+    
       if (period === 'CH' && hours < 12) {
         hour24 = hours + 12;
       }
       
-      // Handle AM (SA) cases - convert 12 AM to 0
+
       if (period === 'SA' && hours === 12) {
         hour24 = 0;
       }
       
-      // Format the time
+
       return `${hour24.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${
         seconds ? seconds.toString().padStart(2, '0') : '00'}`;
     }
     
-    // Time is already in 24-hour format
+
     return timeStr;
   }
   closeSeatSelection() {
@@ -365,8 +365,7 @@ export class MovieInfoComponent implements OnInit {
   
   getUniqueRows(): string[] {
     const rows = Array.from(new Set(this.availableSeats.map(seat => seat.seatRow)));
-    
-    // Sort rows alphabetically but ensure letters come before numbers
+
     return rows.sort((a, b) => {
       const isALetter = isNaN(Number(a));
       const isBLetter = isNaN(Number(b));
@@ -432,7 +431,7 @@ export class MovieInfoComponent implements OnInit {
       return;
     }
     
-    // Save booking info for display in checkout UI
+
     const bookingDetails = {
       movieId: this.movieId,
       movieTitle: this.movie?.title,

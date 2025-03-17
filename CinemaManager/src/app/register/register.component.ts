@@ -1,4 +1,4 @@
-// register.component.ts
+
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -41,7 +41,7 @@ export class RegisterComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar
   ) {
-    // Set max date to 18 years ago (for age restriction)
+  
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
 
@@ -116,7 +116,6 @@ export class RegisterComponent implements OnInit {
     this.isLoading = false;
   }
 
-  // Helper methods for form validation messages
   getErrorMessage(controlName: string): string {
     const control = this.registerForm.get(controlName);
     

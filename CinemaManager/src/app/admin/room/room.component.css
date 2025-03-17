@@ -22,8 +22,7 @@
   .search-filter {
     width: 300px;
   }
-  
-  /* Loading state */
+
   .loading-container {
     display: flex;
     flex-direction: column;
@@ -37,7 +36,7 @@
     color: #666;
   }
   
-  /* Empty state */
+
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -65,7 +64,7 @@
     color: #757575;
   }
   
-  /* Cinema list */
+
   .cinema-title {
     display: flex;
     align-items: center;
@@ -93,8 +92,7 @@
   .cinema-details {
     padding: 8px 16px 16px;
   }
-  
-  /* Room section */
+
   .room-list-header {
     display: flex;
     justify-content: space-between;
@@ -107,8 +105,7 @@
     font-size: 18px;
     font-weight: 500;
   }
-  
-  /* Empty rooms state */
+
   .empty-rooms {
     display: flex;
     flex-direction: column;
@@ -133,7 +130,7 @@
     margin-bottom: 16px;
   }
   
-  /* Room grid */
+
   .room-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

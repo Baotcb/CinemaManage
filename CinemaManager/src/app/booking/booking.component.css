@@ -15,7 +15,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   
-  /* Empty State */
+
   .empty-state {
     padding: 60px 20px;
     background-color: white;
@@ -30,8 +30,7 @@
     color: #bdbdbd;
     margin-bottom: 20px;
   }
-  
-  /* Booking Cards */
+
   .booking-card {
     border-radius: 8px;
     overflow: hidden;
@@ -61,7 +60,7 @@
     font-size: 0.875rem;
   }
   
-  /* Status Chips */
+
   .status-chip {
     padding: 6px 12px;
     border-radius: 16px;
@@ -88,8 +87,7 @@
     background-color: #e3f2fd;
     color: #1565c0;
   }
-  
-  /* Movie Info */
+
   .movie-info-section {
     margin-bottom: 16px;
   }
@@ -156,7 +154,7 @@
     font-size: 0.85rem;
   }
   
-  /* Expanded Details */
+
   .expanded-details {
     margin-top: 20px;
   }
@@ -210,12 +208,12 @@
     border-top: 1px solid #e0e0e0;
   }
   
-  /* Loading spinner */
+
   .loading-spinner {
     padding: 40px 0;
   }
   
-  /* Responsive styles */
+
   @media (max-width: 768px) {
     .movie-details {
       flex-direction: column;
@@ -259,7 +257,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   
-  /* Empty State */
+
   .empty-state {
     padding: 60px 20px;
     background-color: white;
@@ -275,7 +273,7 @@
     margin-bottom: 20px;
   }
   
-  /* Movie Ticket Style Booking Cards */
+
   .booking-card {
     position: relative;
     border-radius: 16px;
@@ -287,7 +285,7 @@
     border: 2px solid #e0e0e0;
   }
   
-  /* Film Strips */
+
   .film-strip {
     position: absolute;
     top: 0;
@@ -313,7 +311,7 @@
     border-radius: 0 8px 8px 0;
   }
   
-  /* Perforation Line */
+
   .booking-card::before {
     content: '';
     position: absolute;
@@ -361,7 +359,7 @@
     font-size: 0.875rem;
   }
   
-  /* Status Chips */
+
   .status-chip {
     padding: 6px 16px;
     border-radius: 50px;
@@ -390,7 +388,7 @@
     color: #1565c0;
   }
   
-  /* Movie Info */
+ 
   .booking-card mat-card-content {
     padding: 20px 24px;
     position: relative;
@@ -405,7 +403,7 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
   }
   
-  /* Add ticket stub holes */
+
   .movie-info-section::before,
   .movie-info-section::after {
     content: '';
@@ -509,7 +507,7 @@
     font-weight: 500;
   }
   
-  /* Expanded Details */
+
   .expanded-details {
     margin-top: 24px;
     background-color: #f5f5f5;
@@ -578,7 +576,7 @@
     color: #673ab7;
   }
   
-  /* Card Actions */
+
   .booking-card mat-card-actions {
     padding: 16px 24px;
     display: flex;
@@ -592,15 +590,14 @@
     margin-right: 8px;
   }
   
-  /* Loading spinner */
+
   .loading-spinner {
     padding: 40px 0;
   }
-  
-  /* Responsive styles */
+
   @media (max-width: 768px) {
     .film-strip-left, .film-strip-right {
-      display: none; /* Hide film strips on mobile for better layout */
+      display: none; 
     }
     
     .movie-details {
@@ -628,12 +625,11 @@
     }
     
     .booking-card::before {
-      top: 80px; /* Adjust perforation line for mobile */
+      top: 80px; 
     }
   }
 
 
-  /* Add this to the existing CSS file */
 .action-buttons {
     display: flex;
     gap: 8px;
@@ -646,7 +642,7 @@
     align-items: center;
   }
   
-  /* Button styles */
+
   button[color="warn"] {
     color: #f44336;
   }
@@ -663,7 +659,7 @@
       justify-content: space-between;
     }
   }
-  /* Button styling refinements */
+
 button[color="warn"] {
   color: white;
   background-color: #f44336;
@@ -673,14 +669,14 @@ button[color="warn"] mat-icon {
   color: white;
 }
 
-/* Add spacing between buttons */
+
 .action-buttons {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-/* Fix spacing on mobile */
+
 @media (max-width: 576px) {
   mat-card-actions {
     flex-direction: column;

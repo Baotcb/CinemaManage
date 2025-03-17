@@ -16,14 +16,14 @@
       </div>
   
       <div *ngIf="!isLoading && !error" class="booking-content">
-        <!-- Tabs -->
+
         <mat-tab-group (selectedTabChange)="filterBookings($event.index)" animationDuration="200ms" class="booking-tabs">
           <mat-tab label="Tất cả ({{bookings.length}})"></mat-tab>
           <mat-tab label="Sắp tới"></mat-tab>
           <mat-tab label="Đã qua"></mat-tab>
         </mat-tab-group>
   
-        <!-- Empty state -->
+      
         <div *ngIf="filteredBookings.length === 0" class="empty-state text-center py-5">
           <mat-icon class="empty-icon">event_busy</mat-icon>
           <h3>Không có đặt vé nào</h3>
@@ -35,7 +35,7 @@
           </button>
         </div>
   
-        <!-- Booking list -->
+     
         <div *ngIf="filteredBookings.length > 0" class="booking-list">
           <mat-card *ngFor="let booking of filteredBookings" class="booking-card mb-4">
             <!-- <div class="film-strip film-strip-left"></div>
@@ -92,7 +92,7 @@
                       </div>
                     </div>
   
-                    <!-- Additional booking details when expanded -->
+         
                     <div *ngIf="expandedBookingId === booking.bookingId" class="expanded-details">
                       <mat-divider class="my-3"></mat-divider>
                       

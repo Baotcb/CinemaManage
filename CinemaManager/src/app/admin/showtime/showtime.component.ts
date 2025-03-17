@@ -20,7 +20,7 @@ export interface Showtime {
   movieId: number;
   roomId: number;
   startTime: Date | string;  
-  endTime: Date | string;   // end time will be calculated based on start time + movie duration 
+  endTime: Date | string;  
   basePrice: number;         
   studentPrice?: number;     
   childPrice?: number;       
@@ -210,35 +210,35 @@ export class ShowtimeComponent implements OnInit {
     );
   }
   
-  // Clear search and reset filtered movies
+
   clearSearch() {
     this.searchTerm = '';
     this.filterMovies();
   }
   
-  // Select a movie to display its showtimes
+
   selectMovie(movie: Movie) {
     this.selectedMovie = movie;
   }
   
-  // Get showtimes for selected movie
+
   getShowtimesForMovie(movieId: number): Showtime[] {
     return this.showtimes.filter(showtime => showtime.movieId === movieId);
   }
   
-  // Format movie duration (minutes to hours and minutes)
+
   formatDuration(minutes: number): string {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours}h ${mins}m`;
   }
   
-  // Format date display
+
   formatDate(dateStr: string | Date): string {
-    // Tạo đối tượng Date từ tham số
+
     const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
     
-    // Hiển thị theo định dạng mong muốn với múi giờ local
+
     return date.toLocaleDateString('vi-VN', { 
       weekday: 'short', 
       year: 'numeric', 
@@ -247,9 +247,9 @@ export class ShowtimeComponent implements OnInit {
     });
   }
   
-  // Format time display
+
   formatTime(dateStr: string | Date): string {
-    // Tạo đối tượng Date từ tham số
+
     const date = typeof dateStr === 'string' ? new Date(dateStr) : dateStr;
     
    
@@ -260,7 +260,7 @@ export class ShowtimeComponent implements OnInit {
     });
   }
   
-  // Format currency display
+
   formatCurrency(amount: number): string {
     return new Intl.NumberFormat('vi-VN', { 
       style: 'currency', 
@@ -269,7 +269,6 @@ export class ShowtimeComponent implements OnInit {
     }).format(amount);
   }
   
-  // Helper to get cinema name from room ID
   getCinemaName(roomId: number): string {
     for (const cinema of this.cinemas) {
       const room = cinema.rooms.find(r => r.roomId === roomId);
@@ -278,7 +277,7 @@ export class ShowtimeComponent implements OnInit {
     return 'Unknown Cinema';
   }
   
-  // Helper to get cinema city from room ID
+
   getCinemaCity(roomId: number): string {
     for (const cinema of this.cinemas) {
       const room = cinema.rooms.find(r => r.roomId === roomId);
@@ -287,7 +286,7 @@ export class ShowtimeComponent implements OnInit {
     return '';
   }
   
-  // Helper to get room name from room ID
+ 
   getRoomName(roomId: number): string {
     for (const cinema of this.cinemas) {
       const room = cinema.rooms.find(r => r.roomId === roomId);
@@ -296,7 +295,7 @@ export class ShowtimeComponent implements OnInit {
     return 'Unknown Room';
   }
   
-  // Helper to get room type from room ID
+
   getRoomType(roomId: number): string {
     for (const cinema of this.cinemas) {
       const room = cinema.rooms.find(r => r.roomId === roomId);
@@ -305,14 +304,13 @@ export class ShowtimeComponent implements OnInit {
     return '';
   }
   
-  // Check if showtime is in the past
   isPastShowtime(showtime: Showtime): boolean {
     const now = new Date();
     const startTime = new Date(showtime.startTime);
     return startTime < now;
   }
   
-  // Open dialog to add a new showtime
+
   openAddShowtimeDialog() {
     if (!this.selectedMovie) return;
     
@@ -334,23 +332,22 @@ export class ShowtimeComponent implements OnInit {
     this.isShowtimeDialogOpen = true;
   }
   
-  // Open dialog to edit an existing showtime
+
   openEditShowtimeDialog(showtime: Showtime) {
     this.editMode = true;
     this.currentShowtime = {...showtime};
-    
-    // Tạo đối tượng Date từ chuỗi ISO (mặc định ở múi giờ UTC)
+
     const startTimeUtc = new Date(showtime.startTime);
     const endTimeUtc = new Date(showtime.endTime);
     
-    // Lấy ngày tháng năm (không điều chỉnh múi giờ)
+
     this.selectedDate = new Date(
       startTimeUtc.getUTCFullYear(),
       startTimeUtc.getUTCMonth(),
       startTimeUtc.getUTCDate()
     );
     
-    // Lấy giờ phút và điều chỉnh về múi giờ Việt Nam (+7)
+
     const startHours = startTimeUtc.getUTCHours() + 7;
     const startMinutes = startTimeUtc.getUTCMinutes();
     this.startTime = `${String(startHours % 24).padStart(2, '0')}:${String(startMinutes).padStart(2, '0')}`;
@@ -362,70 +359,67 @@ export class ShowtimeComponent implements OnInit {
     this.isShowtimeDialogOpen = true;
   }
 
-  // Open delete confirmation dialog
+
   openDeleteShowtimeDialog(showtime: Showtime) {
     this.showtimeToDelete = {...showtime};
     this.isDeleteDialogOpen = true;
   }
 
-  // Close the showtime dialog
+
   closeShowtimeDialog() {
     this.isShowtimeDialogOpen = false;
   }
 
-  // Close the delete confirmation dialog
   closeDeleteDialog() {
     this.isDeleteDialogOpen = false;
     this.showtimeToDelete = null;
   }
 
-  // Calculate the end time based on the start time and movie duration
+
   calculateEndTime() {
     if (!this.selectedMovie || !this.startTime) {
       return;
     }
     
-    // Parse the start time
+
     const [hours, minutes] = this.startTime.split(':').map(part => parseInt(part, 10));
     
-    // Create a date object for the start time
+
     const startDateTime = new Date(this.selectedDate);
     startDateTime.setHours(hours, minutes, 0, 0);
-    
-    // Add the movie duration in minutes
+
     const endDateTime = new Date(startDateTime.getTime() + (this.selectedMovie.duration * 60 * 1000));
     
-    // Format the end time to HH:MM
+
     this.endTime = `${String(endDateTime.getHours()).padStart(2, '0')}:${String(endDateTime.getMinutes()).padStart(2, '0')}`;
   }
 
-  // Update discount prices based on base price
   updateDiscountPrices() {
     if (this.currentShowtime.basePrice) {
-      // Set default discount rates if not already set
+
       this.currentShowtime.studentPrice = Math.round(this.currentShowtime.basePrice * 0.8);
       this.currentShowtime.childPrice = Math.round(this.currentShowtime.basePrice * 0.6);
       this.currentShowtime.seniorPrice = Math.round(this.currentShowtime.basePrice * 0.7);
     }
   }
-  private adjustToVietnamTimeZone(date: Date): Date {
-    // Tạo bản sao của đối tượng Date để không ảnh hưởng đến đối tượng gốc
-    const adjustedDate = new Date(date);
+  // private adjustToVietnamTimeZone(date: Date): Date {
+
+  //   const adjustedDate = new Date(date);
     
-    // Lấy độ lệch múi giờ của người dùng với UTC (tính bằng phút)
-    const userTimezoneOffset = date.getTimezoneOffset();
+  // 
+  //   const userTimezoneOffset = date.getTimezoneOffset();
     
-    // Múi giờ Việt Nam là UTC+7 (tương đương -420 phút)
-    const vietnamTimezoneOffset = -420;
+  // 
+  //   const vietnamTimezoneOffset = -420;
     
-    // Tính toán chênh lệch giữa múi giờ người dùng và múi giờ Việt Nam
-    const timeDifference = vietnamTimezoneOffset - userTimezoneOffset;
+  //  
+  //   const timeDifference = vietnamTimezoneOffset - userTimezoneOffset;
     
-    // Điều chỉnh thời gian
-    adjustedDate.setMinutes(adjustedDate.getMinutes() + timeDifference);
+  //  
+  //   adjustedDate.setMinutes(adjustedDate.getMinutes() + timeDifference);
     
-    return adjustedDate;
-  }
+  //   return adjustedDate;
+  // }
 
 
   saveShowtime() {

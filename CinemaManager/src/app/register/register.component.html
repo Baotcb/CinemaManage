@@ -1,4 +1,4 @@
-<!-- register.component.html -->
+
 <div class="register-page">
   <div class="container">
     <div class="row justify-content-center">
@@ -16,7 +16,7 @@
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
               <div class="row">
                 <div class="col-md-6">
-                  <!-- Username -->
+            
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Tên đăng nhập</mat-label>
                     <input matInput formControlName="username" required>
@@ -24,7 +24,7 @@
                     <mat-error>{{getErrorMessage('username')}}</mat-error>
                   </mat-form-field>
 
-                  <!-- Password -->
+          
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Mật khẩu</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">lock</mat-icon>
@@ -37,7 +37,7 @@
                     <mat-hint>Mật khẩu phải có ít nhất 6 ký tự</mat-hint>
                   </mat-form-field>
 
-                  <!-- Confirm Password -->
+        
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Xác nhận mật khẩu</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">lock_outline</mat-icon>
@@ -48,7 +48,7 @@
                     </mat-error>
                   </mat-form-field>
 
-                  <!-- Email -->
+          
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Email</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">email</mat-icon>
@@ -58,15 +58,14 @@
                 </div>
 
                 <div class="col-md-6">
-                  <!-- Full Name -->
-                  <mat-form-field appearance="outline" class="w-100 mb-3">
+                    <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Họ và tên</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">badge</mat-icon>
                     <input matInput formControlName="fullName" required>
                     <mat-error>{{getErrorMessage('fullName')}}</mat-error>
                   </mat-form-field>
 
-                  <!-- Phone Number -->
+       
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Số điện thoại</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">phone</mat-icon>
@@ -75,7 +74,7 @@
                     <mat-error>{{getErrorMessage('phoneNumber')}}</mat-error>
                   </mat-form-field>
 
-                  <!-- Date of Birth -->
+       
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Ngày sinh</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">cake</mat-icon>
@@ -84,7 +83,7 @@
                     <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
 
-                  <!-- Address -->
+            
                   <mat-form-field appearance="outline" class="w-100 mb-3">
                     <mat-label>Địa chỉ</mat-label>
                     <mat-icon matPrefix class="me-2 text-muted">home</mat-icon>
@@ -93,7 +92,7 @@
                 </div>
               </div>
 
-              <!-- Terms and Conditions -->
+   
               <mat-checkbox formControlName="termsAccepted" color="primary" class="mb-3 d-block">
                 Tôi đồng ý với <a href="#" class="terms-link">Điều khoản sử dụng</a> và <a href="#" class="terms-link">Chính sách bảo mật</a>
                 <mat-error *ngIf="registerForm.get('termsAccepted')?.touched && registerForm.get('termsAccepted')?.errors?.['required']">
@@ -101,7 +100,7 @@
                 </mat-error>
               </mat-checkbox>
 
-              <!-- Submit Button -->
+     
               <div class="d-grid gap-2">
                 <button mat-raised-button color="primary" 
                         class="submit-btn" 

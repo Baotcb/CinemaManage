@@ -1,4 +1,4 @@
-<!-- User Interface (display only if logged in and not admin) -->
+<!-- User Interface  -->
 <ng-container *ngIf="!isAdmin">
   <mat-toolbar color="primary" class="mat-elevation-z6">
     <div class="container">
@@ -32,7 +32,7 @@
         
         <div class="col-md-4">
           <div class="d-flex justify-content-end align-items-center">
-            <!-- Show this if user is not logged in -->
+            
             <ng-container *ngIf="!isLoggedIn">
               <button mat-flat-button color="accent" class="d-none d-md-block btn btn-light m-2" routerLink="/login">
                 <mat-icon class="me-1">account_circle</mat-icon> Đăng Nhập
@@ -42,7 +42,7 @@
               </button>
             </ng-container>
         
-            <!-- Show this if user is logged in -->
+           
             <ng-container *ngIf="isLoggedIn">
               <button mat-button [matMenuTriggerFor]="userMenu" class="d-none d-md-block">
                 <mat-icon class="me-1">person</mat-icon> Tài khoản
@@ -69,7 +69,7 @@
     </div>
   </mat-toolbar>
   
-  <!-- Mobile sidenav for regular users -->
+  <!-- Mobile sidenav -->
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav mode="over" class="p-3">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -120,7 +120,7 @@
   </mat-sidenav-container>
 </ng-container>
 
-<!-- Admin Interface (display only if logged in and is admin) -->
+<!-- Admin Interface -->
 <ng-container *ngIf="isAdmin">
   <mat-toolbar color="primary" class="mat-elevation-z6">
     <div class="container">
