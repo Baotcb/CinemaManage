@@ -64,13 +64,17 @@ export class ShowingMovieComponent implements OnInit {
   genres: Genre[] = [
     { value: 'all', viewValue: 'Tất cả' },
     { value: 'Action', viewValue: 'Hành động' },
+    { value: 'Adventure', viewValue: 'Phiêu lưu' },
+    { value: 'Sci-Fi', viewValue: 'Khoa học viễn tưởng' },
+    { value: 'Drama', viewValue: 'Chính kịch' },
+    { value: 'History', viewValue: 'Lịch sử' },
+    { value: 'Romance', viewValue: 'Tình cảm' },
+    { value: 'Crime', viewValue: 'Tội phạm' },
+    { value: 'Thriller', viewValue: 'Ly kỳ' },
+    { value: 'Horror', viewValue: 'Kinh dị' },
     { value: 'Comedy', viewValue: 'Hài' },
-    { value: 'Drama', viewValue: 'Tâm lý' },
-    { value: 'Science Fiction', viewValue: 'Khoa học viễn tưởng' },
-    { value: 'Thriller', viewValue: 'Kinh dị' },
-    {value:'Family', viewValue:'Gia đình'},
-    {value:'Animation', viewValue:'Hoạt hình'},
-    {value:'Documentary', viewValue:'Tài liệu'},
+    { value: 'Family', viewValue: 'Gia đình' },
+    { value: 'War', viewValue: 'Chiến tranh' }
   ];
 
   filteredMovies: Movie[] = [];
@@ -91,14 +95,22 @@ export class ShowingMovieComponent implements OnInit {
   }
 
   filterMovies(genre: string): void {
-    if (genre == 'all') {
+    if (genre === 'all') {
       this.filteredMovies = [...this.movies];
       console.log('Showing all movies:', this.filteredMovies);
     } else {
       console.log('Filtering movies by genre:', genre);
-      this.filteredMovies = this.movies.filter(movie => 
-        movie.genre.toLowerCase() == genre.toLowerCase()
-      );
+      this.filteredMovies = this.movies.filter(movie => {
+       
+        if (!movie.genre) return false;
+        
+       
+        const movieGenres = movie.genre.split(',').map(g => g.trim().toLowerCase());
+        
+        
+        return movieGenres.includes(genre.toLowerCase());
+      });
+      console.log('Filtered results:', this.filteredMovies);
     }
   }
 }

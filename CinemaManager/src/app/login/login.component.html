@@ -57,8 +57,8 @@
                   </div>
                   
           
-                  <button mat-raised-button color="primary" class="w-100 py-2" type="submit" 
-                          [disabled]="loginForm.invalid || isLoading">
+                  <button mat-stroked-button color="primary" class="w-100 py-2 custom-login-btn" type="submit" 
+                    [disabled]="loginForm.invalid || isLoading">
                     <div class="d-flex align-items-center justify-content-center">
                       <mat-spinner *ngIf="isLoading" [diameter]="20" class="me-2"></mat-spinner>
                       <span>{{ isLoading ? 'Đang đăng nhập...' : 'ĐĂNG NHẬP' }}</span>

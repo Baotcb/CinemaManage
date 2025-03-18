@@ -176,16 +176,16 @@ mat-form-field {
   }
 }
 
-button[type="submit"] {
+/* button[type="submit"] {
   height: 48px;
   font-weight: 600;
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  background: linear-gradient(90deg, #e50914, #ff5722);
+  background: linear-gradient(90deg, #0d47a1, #2196F3);
   border: none;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+  box-shadow: 0 4px 12px rgba(44, 18, 175, 0.3);
   transition: all 0.3s ease;
   
   &:hover:not([disabled]) {
@@ -202,6 +202,51 @@ button[type="submit"] {
     background: linear-gradient(90deg, #cccccc, #dddddd);
     box-shadow: none;
   }
+}
+
+button.mat-stroked-button.mat-primary {
+  border-width: 1.5px; 
+  font-weight: 500; 
+}
+
+button.mat-stroked-button.mat-primary:not([disabled]):hover {
+  background-color: rgba(63, 81, 181, 0.04); 
+} */
+
+.custom-login-btn {
+  height: 48px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  background: linear-gradient(90deg, #0d47a1, #2196F3) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.custom-login-btn:hover:not([disabled]) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4) !important;
+  background: linear-gradient(90deg, #0a3d8c, #1e88e5) !important;
+}
+
+.custom-login-btn:active:not([disabled]) {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3) !important;
+}
+
+.custom-login-btn[disabled] {
+  background: linear-gradient(90deg, #cccccc, #dddddd) !important;
+  box-shadow: none !important;
+  color: rgba(0, 0, 0, 0.38) !important;
+}
+
+
+.custom-login-btn .mat-spinner circle {
+  stroke: white !important;
 }
 
 .register-link {
