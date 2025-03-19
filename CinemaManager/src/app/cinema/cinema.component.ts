@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 interface Cinema {
   cinemaId: number;
@@ -35,7 +36,7 @@ export class CinemaComponent implements OnInit {
     { value: 'District 7', viewValue: 'Quận 7' }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private apiurls : ApiUrlsService) {}
 
   ngOnInit() {
     this.loadCinemas();
@@ -43,7 +44,7 @@ export class CinemaComponent implements OnInit {
 
   loadCinemas() {
     this.isLoading = true;
-    this.http.get<Cinema[]>('https://localhost:7057/api/Cinema/GetAllCinemas')
+    this.http.get<Cinema[]>(this.apiurls.getAllCinemasUrl())
       .subscribe({
         next: (data) => {
           this.cinemas = data;

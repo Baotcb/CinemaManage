@@ -8,6 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 interface Movie {
   movieId: number;
@@ -112,7 +113,8 @@ export class MovieInfoComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private apiurls : ApiUrlsService
 
   ) {
     this.movieId = this.route.snapshot.params['id'];
@@ -123,7 +125,7 @@ export class MovieInfoComponent implements OnInit {
   }
 
   loadMovieDetails() {
-    const apiUrl = `https://localhost:7057/api/Movie/GetMovieById/${this.movieId}`;
+    const apiUrl = this.apiurls.getMovieByIdUrl(this.movieId);
     this.http.get<Movie>(apiUrl).subscribe({
       next: (data) => {
         this.movie = data;
@@ -287,9 +289,13 @@ export class MovieInfoComponent implements OnInit {
     console.log(`Movie end time: ${endTimeFormatted}`);
       
   
-    const apiUrl = `https://localhost:7057/api/Seat/GetAvailableSeats/${this.movieId}/${
-      encodeURIComponent(this.selectedCinema)}/${dateFormatted}/${
-      startTimeFormatted}/${endTimeFormatted}`;
+    const apiUrl = this.apiurls.getAvailableSeatsUrl(
+      this.movieId,
+      this.selectedCinema as string,
+      dateFormatted,
+      startTimeFormatted,
+      endTimeFormatted
+    );
     
     this.http.get<AvailableSeat[]>(apiUrl).subscribe({
       next: (seats) => {
@@ -480,7 +486,7 @@ export class MovieInfoComponent implements OnInit {
     this.isLoadingSeats = true; 
     console.log('Booking request:', bookTicketRequest);
     
-    this.http.post('https://localhost:7057/api/Booking/BookTickets', bookTicketRequest)
+    this.http.post(this.apiurls.getBookTicketsUrl(), bookTicketRequest)
       .subscribe({
         next: (response: any) => {
           this.isLoadingSeats = false;

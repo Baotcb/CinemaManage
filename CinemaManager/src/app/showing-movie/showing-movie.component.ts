@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 export interface Movie {
   movieId: number;
@@ -61,6 +62,7 @@ export class ShowingMovieComponent implements OnInit {
   httpClient = inject(HttpClient);
   movies: Movie[] = [];
 
+  constructor(private apiUrls :ApiUrlsService) { }
   genres: Genre[] = [
     { value: 'all', viewValue: 'Tất cả' },
     { value: 'Action', viewValue: 'Hành động' },
@@ -81,7 +83,7 @@ export class ShowingMovieComponent implements OnInit {
 
   ngOnInit(): void {
  
-    let apiUrl = 'https://localhost:7057/api/Movie/GetShowingMovies';
+    const apiUrl = this.apiUrls.getShowingMoviesUrl();
     this.httpClient.get<Movie[]>(apiUrl).subscribe({
       next: (data) => {
         console.log('Showing movies:', data);
@@ -106,7 +108,6 @@ export class ShowingMovieComponent implements OnInit {
         
        
         const movieGenres = movie.genre.split(',').map(g => g.trim().toLowerCase());
-        
         
         return movieGenres.includes(genre.toLowerCase());
       });

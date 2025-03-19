@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 interface User {
   userId: number;
@@ -44,7 +45,8 @@ export class ProfileComponent implements OnInit {
     private http: HttpClient,
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private apiurls: ApiUrlsService
   ) {
     this.profileForm = this.fb.group({
       fullName: ['', [
@@ -97,8 +99,8 @@ export class ProfileComponent implements OnInit {
 
   loadUserProfile(userId: string) {
     this.isLoading = true;
-    this.http.get<User>(`https://localhost:7057/api/User/GetUserById/${userId}`)
-      .subscribe({
+    this.http.get<User>(this.apiurls.getUserByIdUrl(userId))
+    .subscribe({
         next: (data) => {
           this.user = data;
           console.log('User info: ',this.user);
@@ -153,8 +155,8 @@ export class ProfileComponent implements OnInit {
         ...this.profileForm.value
       };
 
-      this.http.put<User>(`https://localhost:7057/api/User/UpdateUser`, updatedUser)
-        .subscribe({
+      this.http.put<User>(this.apiurls.getUpdateUserUrl(), updatedUser)
+      .subscribe({
           next: (response) => {
             this.user = response;
             this.showSuccessMessage('Cập nhật thông tin thành công');
@@ -234,8 +236,8 @@ export class ProfileComponent implements OnInit {
         newPassword: newPassword
       };
 
-      this.http.put('https://localhost:7057/api/User/ChangePassword', payload)
-        .subscribe({
+      this.http.put(this.apiurls.getChangePasswordUrl(), payload)
+      .subscribe({
           next: (response) => {
             this.showSuccessMessage('Đổi mật khẩu thành công');
             this.togglePasswordChange();

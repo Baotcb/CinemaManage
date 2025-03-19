@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 interface IUser {
   userId?: number;
@@ -39,7 +40,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private apiUrls : ApiUrlsService
   ) {
   
     this.maxDate = new Date();
@@ -87,7 +89,7 @@ export class RegisterComponent implements OnInit {
 
       console.log('User Data:', userData);
 
-       const apiUri = 'https://localhost:7057/api/User/SignUp';
+       const apiUri = this.apiUrls.getRegisterUrl();
             const httpOptions = {
               headers: new HttpHeaders({
                 'Authorization': 'my-auth-token',

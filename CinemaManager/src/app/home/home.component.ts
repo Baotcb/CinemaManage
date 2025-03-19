@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 
 export interface Movie {
@@ -44,6 +45,9 @@ export class HomeComponent implements OnInit {
 
   upcomingMovies:Movie[] = [];
 
+  
+  constructor(private http: HttpClient, private apiurls : ApiUrlsService) {}
+
   promotions = [
     {
       id: 1,
@@ -65,14 +69,13 @@ export class HomeComponent implements OnInit {
     }
   ];
 
-  constructor() { }
 
   ngOnInit(): void {
-    let apiUrl ='https://localhost:7057/api/Movie/GetShowingMovies';
+    let apiUrl =this.apiurls.getShowingMoviesUrl();
     this.httpClient.get(apiUrl).subscribe((data: any) => {
       this.featuredMovies = data;
     });
-    apiUrl = 'https://localhost:7057/api/Movie/GetUpComingMovies';
+    apiUrl = this.apiurls.getCommingUpMoviesUrl();
     this.httpClient.get(apiUrl).subscribe((data: any) => {
       this.upcomingMovies = data;
       console.log('phim sap chieu :', this.upcomingMovies);

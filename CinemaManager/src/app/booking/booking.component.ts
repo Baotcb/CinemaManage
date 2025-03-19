@@ -13,6 +13,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 interface MovieInfo {
   movieId: number;
@@ -98,7 +99,9 @@ export class BookingComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private apiurls : ApiUrlsService
+
   ) {}
 
   ngOnInit(): void {
@@ -117,7 +120,7 @@ export class BookingComponent implements OnInit {
     if (!this.userId) return;
     
     this.isLoading = true;
-    this.http.get<Booking[]>(`https://localhost:7057/api/Booking/User/${this.userId}`)
+    this.http.get<Booking[]>(this.apiurls.getBookingsByUserUrl(this.userId))
       .subscribe({
         next: (data) => {
           this.bookings = data;
@@ -274,7 +277,7 @@ cancelBooking(bookingId: number): void {
   this.isLoading = true;
   
   
-  this.http.post(`https://localhost:7057/api/Booking/Cancel/${this.userId}/${bookingId}`, {})
+  this.http.post(this.apiurls.getCancelBookingUrl(this.userId, bookingId), {})
     .subscribe({
       next: (response: any) => {
         this.snackBar.open(response.message || 'Đã hủy đặt vé thành công', 'Đóng', {

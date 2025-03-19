@@ -6,6 +6,7 @@ import { MaterialModule } from '../material.module';
 import { CommonModule } from '@angular/common';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 interface IUser {
   userId: number;
@@ -32,6 +33,7 @@ export class LoginComponent implements OnInit {
   private router = inject(Router);
   private httpClient = inject(HttpClient);
   private fb = inject(FormBuilder);
+  private apiUrls = inject(ApiUrlsService);
   
   loginForm: FormGroup;
   hidePassword = true;
@@ -77,7 +79,7 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       this.loginError = null;
       
-      const apiUri = 'https://localhost:7057/api/User/Login';
+      const apiUri = this.apiUrls.getLoginUrl();
       const httpOptions = {
         headers: new HttpHeaders({
           'Authorization': 'my-auth-token',

@@ -4,6 +4,7 @@ import { MaterialModule } from '../material.module';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ApiUrlsService } from '../../service/apiurls.service';
 
 @Component({
   selector: 'app-upcoming-movie',
@@ -30,9 +31,11 @@ export class UpcomingMovieComponent implements OnInit {
   }> = [
     
   ];
+
+  constructor(private apiUrls : ApiUrlsService) { }
   
   ngOnInit(): void {
-    let apiUrl = 'https://localhost:7057/api/Movie/GetUpComingMovies';
+    let apiUrl = this.apiUrls.getCommingUpMoviesUrl();
     this.httpClient.get(apiUrl).subscribe((data: any) => {
       this.upcomingMovies = data;
       console.log('phim sap chieu :', this.upcomingMovies);
