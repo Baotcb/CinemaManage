@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { BehaviorSubject } from 'rxjs';
+import { ApiUrlsService } from './apiurls.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +11,14 @@ export class SignalRService {
   public hubConnection!: HubConnection;
   private connectionEstablished = new BehaviorSubject<boolean>(false);
   
-  constructor() {
+  constructor(private apiUrls: ApiUrlsService) {
     this.createConnections();
     this.startConnections();
   }
 
   private createConnections() {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7057/adminHub', {
+      .withUrl(this.apiUrls.getSignalRBaseUrl(), {
         withCredentials: true
       })
       .withAutomaticReconnect()

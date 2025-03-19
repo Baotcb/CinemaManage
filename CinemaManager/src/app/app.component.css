@@ -41,12 +41,17 @@ mat-sidenav {
 .admin-sidenav {
   width: 250px;
   background-color: #f5f5f5;
+  z-index: 1; 
 }
 
 .admin-sidenav-content {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+::ng-deep .admin-sidenav-container .mat-drawer.mat-drawer-side {
+  z-index: auto !important; 
 }
 
 .admin-avatar {
@@ -93,4 +98,23 @@ mat-sidenav {
 
 .text-white {
   color: white;
+}
+.admin-toolbar {
+  background-color: #f6f6f6;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.admin-menu-heading {
+  font-size: 14px;
+  color: #999;
+  padding: 8px 16px;
+  margin-top: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+mat-divider {
+  margin: 8px 0;
 }

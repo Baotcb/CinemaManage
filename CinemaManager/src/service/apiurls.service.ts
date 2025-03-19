@@ -146,6 +146,11 @@ export class ApiUrlsService {
     });
   }
 
+  // SignalR related URLs
+  getSignalRBaseUrl(): string {
+    return environment.apiEndpoints.signalRBaseUrl;
+  }
+
   // Phương thức chung để lấy URL tùy chỉnh
   getUrl(endpoint: string): string {
     return `${this.baseUrl}${endpoint}`;

@@ -38,6 +38,8 @@ export const environment = {
       bookTickets: '/Booking/BookTickets',
       
       // Seat endpoints
-      getAvailableSeats: '/Seat/GetAvailableSeats/{movieId}/{cinema}/{date}/{startTime}/{endTime}'
+      getAvailableSeats: '/Seat/GetAvailableSeats/{movieId}/{cinema}/{date}/{startTime}/{endTime}',
+      // SignalR endpoints
+      signalRBaseUrl: 'https://localhost:7057/adminHub'
     }
   };

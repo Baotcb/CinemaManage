@@ -263,10 +263,10 @@ export class ListmovieComponent implements OnInit {
   
   
   editMovie(movie: Movie) {
-    // Clone movie để không ảnh hưởng đến phiên bản gốc
+ 
     this.movieToEdit = {...movie};
     
-    // Chuyển đổi string dates thành Date objects nếu cần
+  
     if (typeof this.movieToEdit.releaseDate === 'string') {
       this.movieToEdit.releaseDate = new Date(this.movieToEdit.releaseDate);
     }
@@ -287,8 +287,7 @@ export class ListmovieComponent implements OnInit {
     }
   
     const movieToUpdate = {...this.movieToEdit};
-    
-    // Format dates to match DateOnly format in C# (YYYY-MM-DD)
+   
     if (movieToUpdate.releaseDate) {
       const releaseDateObj = new Date(movieToUpdate.releaseDate);
       movieToUpdate.releaseDate = new Date(
@@ -311,7 +310,7 @@ export class ListmovieComponent implements OnInit {
       );
     }
     
-    // Đặt updatedAt là thời gian hiện tại
+
     movieToUpdate.updatedAt = new Date();
     
     console.log('Updating movie:', movieToUpdate);
@@ -327,7 +326,7 @@ export class ListmovieComponent implements OnInit {
   }
   
   deleteMovie(movieId: number) {
-    // Tìm movie với movieId
+
     const movie = this.movies.find(m => m.movieId === movieId);
     if (!movie) return;
     

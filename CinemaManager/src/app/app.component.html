@@ -122,14 +122,14 @@
 
 <!-- Admin Interface -->
 <ng-container *ngIf="isAdmin">
-  <mat-toolbar color="primary" class="mat-elevation-z6">
+  <mat-toolbar color="primary" class="mat-elevation-z6 admin-toolbar">
     <div class="container">
       <div class="row w-100 align-items-center">
         <div class="col-md-3 d-flex align-items-center">
           <button mat-icon-button (click)="toggleAdminSidenav()">
             <mat-icon>menu</mat-icon>
           </button>
-          <a class="navbar-brand d-flex align-items-center text-white text-decoration-none">
+          <a class="navbar-brand d-flex align-items-center text-black text-decoration-none">
             <mat-icon class="me-2">admin_panel_settings</mat-icon>
             <span class="fw-bold fs-4">Admin Panel</span>
           </a>
@@ -149,13 +149,12 @@
   </mat-toolbar>
 
   <!-- Admin sidenav  -->
-  <mat-sidenav-container class="admin-sidenav-container">
+  <mat-sidenav-container class="admin-sidenav-container" style="z-index:1;">
     <mat-sidenav #adminSidenav mode="side" opened class="admin-sidenav">
       <div class="admin-sidenav-content">
         <div class="admin-user-info text-center p-3">
           <mat-icon class="admin-avatar">account_circle</mat-icon>
           <h4 class="mt-2 mb-0 text-dark" >Admin Panel</h4>
-          
         </div>
         <mat-divider></mat-divider>
         <div class="admin-menu">
