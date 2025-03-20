@@ -187,4 +187,43 @@ export class SignalRService {
       this.hubConnection.stop();
     }
   }
+
+public unregisterCinemaEvents() {
+  if (this.hubConnection) {
+    this.hubConnection.off('GetCinemas');
+    this.hubConnection.off('AddCinema');
+    this.hubConnection.off('UpdateCinema');
+    this.hubConnection.off('DeleteCinema');
+  }
+}
+
+
+public unregisterMovieEvents() {
+  if (this.hubConnection) {
+    this.hubConnection.off('GetMovies');
+    this.hubConnection.off('AddMovie');
+    this.hubConnection.off('UpdateMovie');
+    this.hubConnection.off('DeleteMovie');
+  }
+}
+
+public unregisterRoomEvents() {
+  if (this.hubConnection) {
+    this.hubConnection.off('GetRooms');
+    this.hubConnection.off('AddRoom');
+    this.hubConnection.off('UpdateRoom');
+    this.hubConnection.off('DeleteRoom');
+  }
+}
+
+public unregisterShowtimeEvents() {
+  if (this.hubConnection) {
+    this.hubConnection.off('GetShowtimes');
+    this.hubConnection.off('AddShowtime');
+    this.hubConnection.off('UpdateShowtime');
+    this.hubConnection.off('DeleteShowtime');
+  }
+}
+
+
 }

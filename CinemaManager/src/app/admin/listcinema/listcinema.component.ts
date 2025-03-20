@@ -93,22 +93,25 @@ export class ListcinemaComponent implements OnInit, OnDestroy {
   
   
   displayedColumns: string[] = ['cinemaId', 'name', 'address', 'city', 'phone', 'isActive', 'actions'];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private signalRService: SignalRService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
-    this.signalRService.isConnected().subscribe(async (isConnected) => {
-      if (isConnected) {
-        this.setupSignalREvents();
-        this.loadCinemas();
-      }
-    });
+    this.subscriptions.add(
+      this.signalRService.isConnected().subscribe(async (isConnected) => {
+        if (isConnected) {
+          this.setupSignalREvents();
+          this.loadCinemas();
+        }
+      })
+    );
   }
-
-  ngOnDestroy() {
-    
-    if (this.connectionSubscription) {
-      this.connectionSubscription.unsubscribe();
+  
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    if (this.signalRService.hubConnection) {
+     this.signalRService.unregisterCinemaEvents();
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../material.module';
 import { HttpClient } from '@angular/common/http';
@@ -25,7 +25,7 @@ interface Cinema {
   templateUrl: './cinema.component.html',
   styleUrls: ['./cinema.component.css']
 })
-export class CinemaComponent implements OnInit {
+export class CinemaComponent implements OnInit,OnDestroy {
   cinemas: Cinema[] = [];
   isLoading = true;
   selectedDistrict = 'all';
@@ -40,6 +40,9 @@ export class CinemaComponent implements OnInit {
 
   ngOnInit() {
     this.loadCinemas();
+  }
+  ngOnDestroy()  {
+    
   }
 
   loadCinemas() {

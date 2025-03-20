@@ -70,20 +70,23 @@ export class RoomComponent implements OnInit, OnDestroy {
   cinemaForDelete: Cinema | null = null;
 
   constructor(private signalRService: SignalRService, private snackBar: MatSnackBar) {}
-
+  private subscriptions: Subscription = new Subscription();
   ngOnInit() {
+    this.subscriptions.add(
     this.signalRService.isConnected().subscribe(async (isConnected) => {
       if (isConnected) {
         this.setupSignalREvents();
         this.loadRooms();
       }
-    });
+    })
+  );
   }
 
   
   ngOnDestroy() {
-    if (this.connectionSubscription) {
-      this.connectionSubscription.unsubscribe();
+    this.subscriptions.unsubscribe();
+    if (this.signalRService.hubConnection){
+      this.signalRService.unregisterRoomEvents();
     }
   }
   

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SignalRService } from '../../../service/signalr.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Pipe({
   name: 'minutesToHours',
@@ -95,7 +96,7 @@ export interface Movie {
   templateUrl: './listmovie.component.html',
   styleUrl: './listmovie.component.css'
 })
-export class ListmovieComponent implements OnInit {
+export class ListmovieComponent implements OnInit,OnDestroy {
   movies: Movie[] = [];
   filteredMovies: Movie[] = [];
   displayedMovies: Movie[] = [];
@@ -121,16 +122,24 @@ export class ListmovieComponent implements OnInit {
   
 
   expandedMovie: number | null = null;
-  
+    private subscriptions: Subscription = new Subscription();
   constructor(private signalRService: SignalRService) {}
  
   ngOnInit() {
+    this.subscriptions.add(
     this.signalRService.isConnected().subscribe(async (isConnected) => {
       if (isConnected) {
         this.setupSignalREvents();
         this.loadMovies();
       }
-    });
+    })
+  );
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    if (this.signalRService.hubConnection) {
+      this.signalRService.unregisterMovieEvents();
+    }
   }
   
   setupSignalREvents() {

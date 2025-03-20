@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SignalRService } from '../../../service/signalr.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NgForm } from '@angular/forms';
@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Subscription } from 'rxjs';
 
 export interface Showtime {
   showtimeId: number;
@@ -85,7 +86,7 @@ export interface Movie {
   templateUrl: './showtime.component.html',
   styleUrl: './showtime.component.css'
 })
-export class ShowtimeComponent implements OnInit {
+export class ShowtimeComponent implements OnInit,OnDestroy {
   @ViewChild('showtimeForm') showtimeForm!: NgForm;
   
   showtimes: Showtime[] = [];
@@ -114,16 +115,24 @@ export class ShowtimeComponent implements OnInit {
   selectedDate: Date = new Date();
   startTime = '';
   endTime = '';
-
+  private subscriptions: Subscription = new Subscription();
   constructor(private signalRService: SignalRService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
+    this.subscriptions.add(
     this.signalRService.isConnected().subscribe(async (isConnected) => {
       if (isConnected) {
         this.setupSignalREvents();
         this.loadShowtimes();
       }
-    });
+    })
+  );
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    if(this.signalRService.hubConnection){
+      this.signalRService.unregisterShowtimeEvents();
+    }
   }
   
   loadShowtimes() {
