@@ -227,24 +227,36 @@ export class ProfileComponent implements OnInit {
 
   onChangePassword() {
     if (this.changePasswordForm.valid) {
-      const { currentPassword, newPassword } = this.changePasswordForm.value;
-      const userId = localStorage.getItem('userId');
-  
+    
+      const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
+      const newPassword = this.changePasswordForm.get('newPassword')?.value;
+      
+
+      const userId = Number(localStorage.getItem('userId'));
+      
+      
       const payload = {
         userId: userId,
-        oldPassword: currentPassword,
+        oldPassword: currentPassword, 
         newPassword: newPassword
       };
-
+  
       this.http.put(this.apiurls.getChangePasswordUrl(), payload)
-      .subscribe({
+        .subscribe({
           next: (response) => {
-            this.showSuccessMessage('Đổi mật khẩu thành công');
-            this.togglePasswordChange();
+            this.snackBar.open('Đổi mật khẩu thành công', 'Đóng', { duration: 3000 });
+            this.changePasswordForm.reset();
+            this.isChangingPassword = false;
           },
           error: (error) => {
-            const errorMessage = error.error?.message || 'Đổi mật khẩu thất bại';
-            this.showErrorMessage(errorMessage);
+            console.error('Error changing password:', error);
+            
+            
+            if (error.error && error.error.message) {
+              this.snackBar.open(error.error.message, 'Đóng', { duration: 5000 });
+            } else {
+              this.snackBar.open('Đổi mật khẩu thất bại', 'Đóng', { duration: 3000 });
+            }
           }
         });
     }

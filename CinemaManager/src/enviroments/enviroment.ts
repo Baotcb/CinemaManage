@@ -4,7 +4,7 @@ export const environment = {
     apiEndpoints: {
       // User endpoints
       login: '/User/Login',
-      register: 'User/SignUp',
+      register: '/User/SignUp',
       getUser: '/User/GetUserById/{userId}',
       updateUser: '/User/UpdateUser',
       changePassword: '/User/ChangePassword',

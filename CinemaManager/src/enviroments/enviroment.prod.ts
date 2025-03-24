@@ -4,7 +4,7 @@ export const environment = {
     apiEndpoints: {
       // User endpoints
       login: '/User/Login',
-      register: 'User/SignUp',
+      register: '/User/SignUp',
       getUser: '/User/GetUserById/{userId}',
       updateUser: '/User/UpdateUser',
       changePassword: '/User/ChangePassword',
@@ -40,6 +40,6 @@ export const environment = {
       // Seat endpoints
       getAvailableSeats: '/Seat/GetAvailableSeats/{movieId}/{cinema}/{date}/{startTime}/{endTime}',
       // SignalR endpoints
-      signalRBaseUrl: 'https://localhost:7057/adminHub'
+      signalRBaseUrl: 'https://????.com/adminHub'
     }
   };
