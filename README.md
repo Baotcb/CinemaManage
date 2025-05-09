@@ -20,7 +20,7 @@ Dự án này nhằm mang đến một giải pháp toàn diện cho các nhà q
   - TypeScript (39.2%)
   - HTML (37.7%)
   - CSS (23.1%)
-- **Frontend Framework**: Sử dụng các công nghệ web hiện đại để xây dựng giao diện người dùng.
+- **Frontend Framework**: Sử dụng các công nghệ web hiện đại như Angular Material để xây dựng giao diện người dùng.
 
 ## Cách Cài Đặt
 
